@@ -1,28 +1,42 @@
 package main_threads;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.Queue;
 import java.util.Scanner;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import utilities.StringCountComparator;
 
 public class PlayTest {
+	
+	private static final int PORT = 4248;
 
 	public static void main(String[] args) {
 
@@ -252,6 +266,314 @@ public class PlayTest {
 	public static void log3(double number) {
 		double log = (Math.log(number) / Math.log(3));
 		System.out.println(log);
+	}
+	
+	private void bitManipulate(long bit, int shift) {
+		System.out.println("Input integer (binary): " + Long.toBinaryString(bit));
+		System.out.println("Input shift (binary)  : " + Long.toBinaryString(shift) + System.lineSeparator());
+		
+		long shiftLeft = bit << shift;
+		long shiftRight = bit >> shift;
+		long inclusiveOr = bit | shift;
+		long exclusiveOr = bit ^ shift;
+		long and = bit & shift;
+		
+		System.out.println("Shifting by " + shift + " bits.");
+		System.out.println("Shift left : " + shiftLeft);
+		System.out.println("Shift right: " + shiftRight + System.lineSeparator());
+		
+		System.out.println("And (decimal): " + and);
+		System.out.println("And (binary) : " + Long.toBinaryString(and) + System.lineSeparator());
+		
+		System.out.println("Inclusive or (decimal): " + inclusiveOr);
+		System.out.println("Inclusive or (binary) : " + Long.toBinaryString(inclusiveOr));
+		System.out.println("Exclusive or (decimal): " + exclusiveOr);
+		System.out.println("Exclusive or (binary) : " + Long.toBinaryString(exclusiveOr));
+	}
+	
+	private void getAndDisplayMemoryId() {
+		String id = ManagementFactory.getRuntimeMXBean().getClassPath();
+		System.out.println(id);
+	}
+	
+	private void testExperimentalRegex() {
+		final String SEPARATOR = "§¶§";
+		System.out.println(SEPARATOR);
+		
+		String test = "This" + SEPARATOR + SEPARATOR + "is" + SEPARATOR + 'a' + SEPARATOR + "string";
+		
+		String revised = test.replaceAll(SEPARATOR, System.lineSeparator());
+		
+		System.out.println(revised);
+	}
+	
+	private void imageProcessing() {
+		try {
+			synchronized (this) {
+				this.wait(1000);
+			}
+		} catch (InterruptedException err) {
+			err.printStackTrace();
+		}
+
+		short fileCounter = 1;
+
+		try {
+			/*
+			 * create welcoming socket at port on client
+			 */
+			ServerSocket welcomeSocket = new ServerSocket(PORT);
+			int stockNumber = 100002;
+
+			File image = new File(stockNumber + "-" + fileCounter + ".jpg");
+			int totalBytes = 0;
+			List<Integer> locationsOfFiles = new ArrayList<>();
+
+			if (image.exists()) {
+				do {
+					if (totalBytes < Integer.MAX_VALUE - (int) image.length()) {
+						locationsOfFiles.add((int) image.length());
+						System.out.println(image.getName() + " is " + image.length() + " bytes.");
+						fileCounter++;
+						totalBytes = totalBytes + (int) image.length();
+						image = new File(stockNumber + "-" + fileCounter + ".jpg");
+						// System.out.println("image exists " + image.exists());
+					} else {
+						break;
+					}
+				} while (image.exists());
+
+				System.out.println(totalBytes);
+				System.out.println(locationsOfFiles.size());
+
+				byte[] files = convertFileToBytes(stockNumber, locationsOfFiles, totalBytes);
+				sendData(files, locationsOfFiles, stockNumber, welcomeSocket);
+			}
+
+			welcomeSocket.close();
+		} catch (IOException err) {
+			err.printStackTrace();
+		}
+	}
+
+	private byte[] convertFileToBytes(int stockNumber, List<Integer> locationsOfFiles, int totalBytes) {
+		byte[] byter = new byte[totalBytes];
+		int fileOffset = 0;
+
+		for (int index = 0; index < locationsOfFiles.size(); index++) {
+			File file = new File(stockNumber + "-" + (index + 1) + ".jpg");
+			if (file.exists()) {
+				try {
+					FileInputStream fileInputStream = new FileInputStream(file);
+					System.out.println("reading bytes starting at " + fileOffset + " for " + locationsOfFiles.get(index)
+							+ " bytes");
+					fileInputStream.read(byter, fileOffset, locationsOfFiles.get(index));
+
+					fileOffset = fileOffset + locationsOfFiles.get(index);
+
+					fileInputStream.close();
+				} catch (FileNotFoundException err) {
+					err.printStackTrace();
+					System.out.println("Error finding the file");
+				} catch (IOException err) {
+					err.printStackTrace();
+					System.out.println("Error reading the file");
+				}
+			}
+		}
+
+		System.out.println(byter.length);
+		return byter;
+	}
+
+	private void sendData(byte[] toSend, List<Integer> locationsOfFiles, int stockNumber, ServerSocket welcomeSocket) {
+		try {
+			Socket connectionSocket = welcomeSocket.accept(); // wait
+			// to
+			// welcome
+			// socket
+			// for
+			// client
+			// connect
+
+			System.out.println("Connected to client");
+
+			OutputStream out = connectionSocket.getOutputStream();
+			DataOutputStream dataSending = new DataOutputStream(out);
+
+			int numberOfFiles = locationsOfFiles.size();
+
+			dataSending.writeInt(toSend.length);
+			dataSending.writeInt(stockNumber);
+			dataSending.writeInt(numberOfFiles);
+			for (int index = 0; index < numberOfFiles; index++) {
+				dataSending.writeInt(locationsOfFiles.get(index));
+			}
+
+			System.out.println("Length of byte array is " + toSend.length + ", sending to client at "
+					+ connectionSocket.getInetAddress());
+			if (toSend.length > 0) {
+				/*
+				 * sends the byte array
+				 */
+				dataSending.write(toSend);
+			}
+		} catch (Exception err) {
+			err.printStackTrace();
+		}
+	}
+	
+	private void startClockOut() {
+		File folder = new File("test folder 3");
+		try {
+			String re = seeIfStillClockedIn(folder);
+			System.out.println(re);
+		} catch (IOException err) {
+			err.printStackTrace();
+		}
+		try {
+			Date today = new Date();
+			DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.US);
+			String[] timeData = getClockOutTime("12/22/2013 12:33:17", formatter.format(today), 24);
+			for (String entry : timeData) {
+				System.out.println(entry);
+			}
+		} catch (ParseException err) {
+			err.printStackTrace();
+		}
+	}
+
+	/**
+	 * this method will look at the CSV file inside the folder created for this
+	 * instance of the Timecard object, and it returns the content of it. If
+	 * there is content, the user is still logged in from a previous session. If
+	 * not, the user is up to date with their clock-in, clock-out cycles.
+	 * 
+	 * @param folder
+	 * @return the string with their clock in information
+	 * @throws IOException
+	 */
+	private String seeIfStillClockedIn(File folder) throws IOException {
+		String csvPath = folder.getPath() + "/timecard1.csv";
+		String csvLine = "";
+
+		File csv = new File(csvPath);
+		System.out.println("File is at " + csv.getPath());
+		if (csv.exists()) {
+			BufferedReader csvReader = new BufferedReader(new FileReader(csv));
+
+			/*
+			 * advances past the first line in the CSV and ignores it, this is
+			 * the header
+			 */
+			csvReader.readLine();
+
+			csvLine = csvReader.readLine();
+
+			csvReader.close();
+		}
+
+		if (!csvLine.isEmpty()) {
+			return csvLine;
+		} else {
+			return "the person is up-to-date";
+		}
+	}
+
+	private String[] getClockOutTime(String earlier, String later, long maxClock) throws ParseException {
+		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.US);
+		Date earlyDate = format.parse(earlier);
+		Date laterDate = format.parse(later);
+		System.out.println("Clock in date is " + earlyDate + "\nTime now is " + laterDate);
+
+		long millisMaxClock = ((maxClock * 60) * 60) * 1000;
+		System.out.println(
+				"Difference in milliseconds between clock in time and " + maxClock + " hours later: " + millisMaxClock);
+
+		long differenceBetweenDates = laterDate.getTime() - earlyDate.getTime();
+		System.out.println("Difference in milliseconds between clock in time and now: " + differenceBetweenDates);
+
+		long differenceToUse;
+		String clockOutDate;
+		if (differenceBetweenDates < millisMaxClock) {
+			differenceToUse = differenceBetweenDates;
+			clockOutDate = later;
+			System.out.println("Clocking out with current date and time.  Clock out date is set to " + clockOutDate);
+			// use the current laterDate object to clock out with
+		} else {
+			laterDate.setTime(earlyDate.getTime() + millisMaxClock);
+			differenceToUse = millisMaxClock;
+			clockOutDate = formattedDate(laterDate, format);
+			System.out.println("Clocking out with the maxClock value.  Clock out date is set to " + clockOutDate);
+		}
+
+		String formattedClockOutDate = clockOutDate.replace(' ', '^');
+		double differenceInHours = ((Double.parseDouble("" + differenceToUse) / 1000) / 60) / 60;
+		System.out.println("Difference in hours " + differenceInHours);
+
+		formattedClockOutDate = formattedClockOutDate + '^' + differenceInHours;
+
+		String[] timeData = formattedClockOutDate.split("\\^");
+		return timeData;
+	}
+
+	private String formattedDate(Date date, DateFormat forTime) {
+		String formattedDate = forTime.format(date);
+		return formattedDate;
+	}
+
+	private void logInTextFile() {
+		try {
+			File file = new File("test folder/test.txt");
+			file.createNewFile();
+			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+			fileWriter.write("String 1" + System.lineSeparator());
+
+			for (int i = 2; i < 1003; i++) {
+				fileWriter.write("String " + i + System.lineSeparator());
+			}
+
+			fileWriter.close();
+
+			System.out.println(file.getPath());
+
+			File folder = new File("test folder 3");
+			folder.mkdir();
+
+			System.out.println(folder.getPath());
+		} catch (IOException err) {
+			err.printStackTrace();
+		}
+	}
+
+	private void addPictureInFolderToVFP9Database() {
+		try {
+			BufferedWriter fileMaker = new BufferedWriter(new FileWriter("pictures7/this.txt"));
+			fileMaker.write("This is a test");
+			fileMaker.close();
+
+			fileMaker = new BufferedWriter(new FileWriter("pictures7/this2.txt"));
+			fileMaker.write("127000");
+			fileMaker.close();
+		} catch (IOException err) {
+			err.printStackTrace();
+		}
+
+		try {
+			Runtime.getRuntime()
+					.exec("\"C:/Documents and Settings/rainmaker/My" + " Documents/Workspace/Server3/export\" "
+							+ "\"!T:/control5/ctrldbf5/images/pictures\" \"100002\" "
+							+ "\"C:/Documents and Settings/rainmaker/My Documents/Workspace/Play/\"");
+		} catch (IOException err) {
+			err.printStackTrace();
+		}
+	}
+	
+	private String getDateTime() {
+		Date date = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss");
+		
+		return format.format(date);
 	}
 
 }

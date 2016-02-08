@@ -33,6 +33,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import utilities.StringCountComparator;
+import utilities.Write;
 
 public class PlayTest {
 	
@@ -46,9 +47,11 @@ public class PlayTest {
 
 		// getMaxProfit();
 
-		System.out.println(compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
+		Write.quickWrite(compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
 
-		System.out.println(replaceSpaces("Mr Haim Style    ", 13)); // 0-1 ms
+		Write.quickWrite(replaceSpaces("Mr Haim Style    ", 13)); // 0-1 ms
+		
+		
 
 		// log3(81); // takes 3-7 ms
 
@@ -62,7 +65,7 @@ public class PlayTest {
 
 		long futureTime = System.currentTimeMillis();
 
-		System.out.println("This took " + (futureTime - currentTime) + " ms.");
+		Write.quickWrite("This took " + (futureTime - currentTime) + " ms.");
 
 	}
 

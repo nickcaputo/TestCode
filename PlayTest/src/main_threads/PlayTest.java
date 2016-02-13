@@ -41,17 +41,21 @@ public class PlayTest {
 
 	public static void main(String[] args) {
 
+		PlayTest s = new PlayTest();
+
 		long currentTime = System.currentTimeMillis();
 
 		// addToQueue();
 
 		// getMaxProfit();
 
-		Write.quickWrite(compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
+		s.compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz");
 
-		Write.quickWrite(replaceSpaces("Mr Haim Style    ", 13)); // 0-1 ms
+		s.replaceSpaces("Mr Haim Style    ", 13); // 0-1 ms
 		
+		s.checkSteps(1999);
 		
+		Write.quickWrite(s.reverseString("Haim"));
 
 		// log3(81); // takes 3-7 ms
 
@@ -68,8 +72,25 @@ public class PlayTest {
 		Write.quickWrite("This took " + (futureTime - currentTime) + " ms.");
 
 	}
+	
+	public PlayTest() {
+		
+	}
+	
+	public String reverseString(String string) {
+		char[] array = string.toCharArray();
+		char[] reversed = new char[array.length];
+		
+		int count = 0;
+		for (int i = array.length - 1; i >= 0; i--) {
+			reversed[count] = array[i];
+			count++;
+		}
+		
+		return new String(reversed);
+	}
 
-	public static String replaceSpaces(String input, int inputLength) {
+	public String replaceSpaces(String input, int inputLength) {
 		char[] array = new char[input.length()];
 		int arrCount = 0;
 
@@ -91,8 +112,16 @@ public class PlayTest {
 
 		return string;
 	}
+	
+	private int checkSteps(int three) {
+		if (three <= 3) {
+			return 1;
+		} else {
+			return 1 + checkSteps(three - 3);
+		}
+	}
 
-	public static String compress(String input) {
+	public String compress(String input) {
 		int inputLength = input.length();
 		if (inputLength <= 2) {
 			// System.out.println("Returning due to length.");
@@ -127,7 +156,7 @@ public class PlayTest {
 		}
 	}
 
-	public static void hasher() {
+	public void hasher() {
 		HashMap<String, Integer> hasher = new HashMap<>();
 
 		Scanner console = new Scanner(System.in);
@@ -159,7 +188,7 @@ public class PlayTest {
 		console.close();
 	}
 
-	public static void setConnectionToDatabase() {
+	public void setConnectionToDatabase() {
 		Connection conn = null;
 		String dbUrl = "jdbc:mysql://localhost:3306/";
 		String name = "heroes";
@@ -185,7 +214,7 @@ public class PlayTest {
 		}
 	}
 
-	public static void getMaxProfit() {
+	public void getMaxProfit() {
 
 		int[] stocks = new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 };
 
@@ -213,7 +242,7 @@ public class PlayTest {
 
 	}
 
-	public static void addToQueue() {
+	public void addToQueue() {
 		TreeSet<String> queues = new TreeSet<>();
 
 		queues.add("S");
@@ -246,7 +275,7 @@ public class PlayTest {
 		}
 	}
 
-	public static void executeCalc30Seconds() {
+	public void executeCalc30Seconds() {
 		while (true) {
 
 			try {
@@ -258,7 +287,7 @@ public class PlayTest {
 		}
 	}
 
-	public static void play(int[] coins) {
+	public void play(int[] coins) {
 		double numberPower = Math.sqrt(8);
 		System.out.println(numberPower);
 		System.out.println(Math.floor(numberPower));
@@ -266,7 +295,7 @@ public class PlayTest {
 
 	}
 
-	public static void log3(double number) {
+	public void log3(double number) {
 		double log = (Math.log(number) / Math.log(3));
 		System.out.println(log);
 	}

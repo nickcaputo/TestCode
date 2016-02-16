@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.SortedSet;
@@ -36,7 +37,7 @@ import utilities.StringCountComparator;
 import utilities.Write;
 
 public class PlayTest {
-	
+
 	private static final int PORT = 4248;
 
 	public static void main(String[] args) {
@@ -47,14 +48,14 @@ public class PlayTest {
 
 		// addToQueue();
 
-		// getMaxProfit();
+		// s.getMaxProfit(new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 });
 
 		s.compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz");
 
 		s.replaceSpaces("Mr Haim Style    ", 13); // 0-1 ms
-		
+
 		s.checkSteps(1999);
-		
+
 		Write.quickWrite(s.reverseString("Haim"));
 
 		// log3(81); // takes 3-7 ms
@@ -65,31 +66,45 @@ public class PlayTest {
 
 		// hasher();
 
-		// play();
+		// s.examineDoubles();
 
 		long futureTime = System.currentTimeMillis();
 
 		Write.quickWrite("This took " + (futureTime - currentTime) + " ms.");
 
 	}
-	
-	public PlayTest() {
-		
-	}
-	
+
+	/**
+	 * Takes a string object as a parameter, and returns a reversed. Example:
+	 * Input: "Ripley", Output: "yelpiR"
+	 * 
+	 * @param string,
+	 *            string to reverse
+	 * @return new String of reversed input
+	 */
 	public String reverseString(String string) {
 		char[] array = string.toCharArray();
 		char[] reversed = new char[array.length];
-		
+
 		int count = 0;
 		for (int i = array.length - 1; i >= 0; i--) {
 			reversed[count] = array[i];
 			count++;
 		}
-		
+
 		return new String(reversed);
 	}
 
+	/**
+	 * Takes a string as a parameter, and replaces the spaces in it with '%20'
+	 * symbols
+	 * 
+	 * @param input,
+	 *            the string to replace
+	 * @param inputLength,
+	 *            the length of the substring to consider when replacing
+	 *            spaces @return, the string with all spaces replaced
+	 */
 	public String replaceSpaces(String input, int inputLength) {
 		char[] array = new char[input.length()];
 		int arrCount = 0;
@@ -112,15 +127,63 @@ public class PlayTest {
 
 		return string;
 	}
-	
-	private int checkSteps(int three) {
-		if (three <= 3) {
-			return 1;
-		} else {
-			return 1 + checkSteps(three - 3);
+
+	/**
+	 * Test method which adds items from a collection to a HashMap to get an
+	 * idea of how many duplicates there are in the collection.
+	 */
+	private static void hashMap() {
+		Map<Integer[], Integer> counter = new HashMap<>();
+		List<Integer[]> cellHistory = new ArrayList<>();
+
+		for (Integer[] item : cellHistory) {
+			Integer number = counter.get(item);
+			if (number == null) {
+				counter.put(item, 1);
+			} else {
+				counter.remove(item);
+				number++;
+
+				counter.put(item, number);
+			}
+
+			if (cellHistory.size() == counter.size()) {
+				Write.writeLine("Already most efficient path!");
+			} else {
+				// Write.writeLine("Can be more efficient");
+				// trim the ArrayList
+			}
 		}
 	}
 
+	/**
+	 * Basic recursion method which checks how many steps a person would need to
+	 * take to get to the top of a staircase, provided they skip 3 steps each
+	 * time.
+	 * 
+	 * @param sizeOfStaircase,
+	 *            the amount of steps in the staircase @return, how many steps
+	 *            to take to get to the top
+	 */
+	private int checkSteps(int sizeOfStaircase) {
+
+		if (sizeOfStaircase <= 3) {
+			return 1;
+		} else {
+			return 1 + checkSteps(sizeOfStaircase - 3);
+		}
+
+	}
+
+	/**
+	 * Compresses a string by removing repeating characters and replacing them
+	 * with the character followed by the amount of times it is repeated.
+	 * Example: Input: "aaaaaaabbbbbcccxxxyyyzzz", Output: "a7b5c3x3y3z3"
+	 * 
+	 * @param input,
+	 *            String to compress @return, compressed string, or the same
+	 *            string if compression would not make it shorter
+	 */
 	public String compress(String input) {
 		int inputLength = input.length();
 		if (inputLength <= 2) {
@@ -156,6 +219,11 @@ public class PlayTest {
 		}
 	}
 
+	/**
+	 * Used in a project of mine. This reads a file or dynamic input and adds
+	 * the content to a HashMap, keeping track of duplicates and indicating how
+	 * many duplicates are in the map.
+	 */
 	public void hasher() {
 		HashMap<String, Integer> hasher = new HashMap<>();
 
@@ -188,6 +256,9 @@ public class PlayTest {
 		console.close();
 	}
 
+	/**
+	 * Establishes a connection to a MySQL database.
+	 */
 	public void setConnectionToDatabase() {
 		Connection conn = null;
 		String dbUrl = "jdbc:mysql://localhost:3306/";
@@ -214,9 +285,14 @@ public class PlayTest {
 		}
 	}
 
-	public void getMaxProfit() {
-
-		int[] stocks = new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 };
+	/**
+	 * Given a set of stock values, finds the maximum profit we could make by
+	 * selling them at any point.
+	 * 
+	 * @param stocks,
+	 *            the list of stocks to check for the maximum profit
+	 */
+	public void getMaxProfit(int[] stocks) {
 
 		if (stocks.length < 2) {
 			throw new IllegalArgumentException("You have to have at least two prices to sell at.");
@@ -242,6 +318,9 @@ public class PlayTest {
 
 	}
 
+	/**
+	 * Test method adding items to a queue.
+	 */
 	public void addToQueue() {
 		TreeSet<String> queues = new TreeSet<>();
 
@@ -275,19 +354,26 @@ public class PlayTest {
 		}
 	}
 
+	/**
+	 * Executes the calculator on a windows machine every 30 seconds.
+	 */
 	public void executeCalc30Seconds() {
 		while (true) {
 
 			try {
 				Runtime.getRuntime().exec("calc");
-				Thread.sleep(10000);
+				Thread.sleep(30000);
 			} catch (InterruptedException | IOException err) {
 				err.printStackTrace();
 			}
 		}
 	}
 
-	public void play(int[] coins) {
+	/**
+	 * A general use method, compares whether an int and a double.floor() are
+	 * equal.
+	 */
+	public void examineDoubles() {
 		double numberPower = Math.sqrt(8);
 		System.out.println(numberPower);
 		System.out.println(Math.floor(numberPower));
@@ -295,50 +381,75 @@ public class PlayTest {
 
 	}
 
-	public void log3(double number) {
+	/**
+	 * Takes a number and returns that number in log base 3
+	 * 
+	 * @param number,
+	 *            the number to log
+	 * @return the number in log base 3
+	 */
+	public double log3(double number) {
 		double log = (Math.log(number) / Math.log(3));
 		System.out.println(log);
+		return log;
 	}
-	
+
+	/**
+	 * Method testing the effects of bit manipulation.
+	 * 
+	 * @param bit,
+	 *            the number to be represented in binary
+	 * @param shift,
+	 *            how much to shift this bit left/right
+	 */
 	private void bitManipulate(long bit, int shift) {
 		System.out.println("Input integer (binary): " + Long.toBinaryString(bit));
 		System.out.println("Input shift (binary)  : " + Long.toBinaryString(shift) + System.lineSeparator());
-		
+
 		long shiftLeft = bit << shift;
 		long shiftRight = bit >> shift;
 		long inclusiveOr = bit | shift;
 		long exclusiveOr = bit ^ shift;
 		long and = bit & shift;
-		
+
 		System.out.println("Shifting by " + shift + " bits.");
 		System.out.println("Shift left : " + shiftLeft);
 		System.out.println("Shift right: " + shiftRight + System.lineSeparator());
-		
+
 		System.out.println("And (decimal): " + and);
 		System.out.println("And (binary) : " + Long.toBinaryString(and) + System.lineSeparator());
-		
+
 		System.out.println("Inclusive or (decimal): " + inclusiveOr);
 		System.out.println("Inclusive or (binary) : " + Long.toBinaryString(inclusiveOr));
 		System.out.println("Exclusive or (decimal): " + exclusiveOr);
 		System.out.println("Exclusive or (binary) : " + Long.toBinaryString(exclusiveOr));
 	}
-	
+
+	/**
+	 * Prints the label for the location in memory that this program is using.
+	 */
 	private void getAndDisplayMemoryId() {
 		String id = ManagementFactory.getRuntimeMXBean().getClassPath();
 		System.out.println(id);
 	}
-	
+
+	/**
+	 * Tests an experimental regular expression for use in TCP/IP.
+	 */
 	private void testExperimentalRegex() {
 		final String SEPARATOR = "§¶§";
 		System.out.println(SEPARATOR);
-		
+
 		String test = "This" + SEPARATOR + SEPARATOR + "is" + SEPARATOR + 'a' + SEPARATOR + "string";
-		
+
 		String revised = test.replaceAll(SEPARATOR, System.lineSeparator());
-		
+
 		System.out.println(revised);
 	}
-	
+
+	/**
+	 * Recieves an image over the network and converts the byte[] to files
+	 */
 	private void imageProcessing() {
 		try {
 			synchronized (this) {
@@ -388,6 +499,17 @@ public class PlayTest {
 		}
 	}
 
+	/**
+	 * Converts a file to a byte array to send over the network.
+	 * 
+	 * @param stockNumber,
+	 *            the label for the file
+	 * @param locationsOfFiles,
+	 *            the points in the array that denote new files
+	 * @param totalBytes,
+	 *            the total bytes in the array
+	 * @return the byte array of all files combined
+	 */
 	private byte[] convertFileToBytes(int stockNumber, List<Integer> locationsOfFiles, int totalBytes) {
 		byte[] byter = new byte[totalBytes];
 		int fileOffset = 0;
@@ -418,6 +540,19 @@ public class PlayTest {
 		return byter;
 	}
 
+	/**
+	 * Sends a byte[] over the network.
+	 * 
+	 * @param toSend,
+	 *            the byte[] to send
+	 * @param locationsOfFiles,
+	 *            the points in the byte[] which denote new files
+	 * @param stockNumber,
+	 *            the label for these pictures in the database
+	 * @param welcomeSocket,
+	 *            the Server Socket that the tunnel is present on.
+	 * 
+	 */
 	private void sendData(byte[] toSend, List<Integer> locationsOfFiles, int stockNumber, ServerSocket welcomeSocket) {
 		try {
 			Socket connectionSocket = welcomeSocket.accept(); // wait
@@ -454,7 +589,10 @@ public class PlayTest {
 			err.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Begins a sample clock out function for someone with the Timecard app.
+	 */
 	private void startClockOut() {
 		File folder = new File("test folder 3");
 		try {
@@ -512,6 +650,20 @@ public class PlayTest {
 		}
 	}
 
+	/**
+	 * Compares the time difference between two times, and sees if it is shorter
+	 * than a given maximum time.
+	 * 
+	 * @param earlier,
+	 *            the earlier time
+	 * @param later,
+	 *            the later time
+	 * @param maxClock,
+	 *            the maximum amount of hours the difference can be
+	 * @return the difference, or maximum amount of hours, whichever is shorter
+	 * @throws ParseException,
+	 *             in case the time strings are not formatted correctly
+	 */
 	private String[] getClockOutTime(String earlier, String later, long maxClock) throws ParseException {
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.US);
 		Date earlyDate = format.parse(earlier);
@@ -554,6 +706,9 @@ public class PlayTest {
 		return formattedDate;
 	}
 
+	/**
+	 * Creates a new folder and file within it.
+	 */
 	private void logInTextFile() {
 		try {
 			File file = new File("test folder/test.txt");
@@ -600,11 +755,11 @@ public class PlayTest {
 			err.printStackTrace();
 		}
 	}
-	
+
 	private String getDateTime() {
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss");
-		
+
 		return format.format(date);
 	}
 

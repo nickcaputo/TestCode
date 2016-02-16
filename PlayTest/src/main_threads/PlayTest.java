@@ -50,13 +50,13 @@ public class PlayTest {
 
 		// s.getMaxProfit(new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 });
 
-		s.compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz");
+		Write.quickWrite(s.compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
 
 		s.replaceSpaces("Mr Haim Style    ", 13); // 0-1 ms
 
 		s.checkSteps(1999);
 
-		Write.quickWrite(s.reverseString("Haim"));
+		s.reverseString("Ripley");
 
 		// log3(81); // takes 3-7 ms
 
@@ -67,7 +67,7 @@ public class PlayTest {
 		// hasher();
 
 		// s.examineDoubles();
-
+		
 		long futureTime = System.currentTimeMillis();
 
 		Write.quickWrite("This took " + (futureTime - currentTime) + " ms.");

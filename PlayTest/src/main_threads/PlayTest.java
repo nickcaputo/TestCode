@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import tools.Node;
+
 import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -217,6 +220,29 @@ public class PlayTest {
 			String compressedString = builder.toString();
 			return compressedString;
 		}
+	}
+	
+	/**
+	 * Searches a tree for a goal node in a depth first manner.
+	 * This problem is recursive.
+	 */
+	public static Node traverseTree(Node node, int goal) {
+			if (node.data == goal) {
+				return node;
+			} else if (node.left != null) {
+				Node returned = traverseTree(node.left, goal);
+				if (returned.data == goal) {
+					return returned;
+				}
+			} else if (node.right != null) {
+				Node returned = traverseTree(node.right, goal);
+				if (returned.data == goal) {
+					return returned;
+				}
+			}
+			
+			// called when tree is searched completely
+			return null;
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package main_threads;
 
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -47,6 +48,9 @@ public class PlayTest {
 
 		runThisStuff();
 
+		Rectangle rect = new Rectangle(1, 0, 13, 9);
+		Write.quickWrite(rect.x);
+
 		long futureTime = System.currentTimeMillis();
 		Write.quickWrite("This took " + (futureTime - currentTime) + " ms.");
 	}
@@ -54,15 +58,15 @@ public class PlayTest {
 	private static void runThisStuff() {
 		// addToQueue();
 
-//		getMaxProfit(new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 });
+		// getMaxProfit(new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 });
 
 		Write.quickWrite(compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
 
-//		replaceSpaces("Mr Haim Style    ", 13); // 0-1 ms
-//
-//		checkSteps(1999);
-//
-//		reverseString("Ripley");
+		// replaceSpaces("Mr Haim Style ", 13); // 0-1 ms
+		//
+		// checkSteps(1999);
+		//
+		// reverseString("Ripley");
 
 		// log3(81); // takes 3-7 ms
 
@@ -136,6 +140,14 @@ public class PlayTest {
 		String string = new String(array);
 
 		return string;
+	}
+
+	private static float getMean() {
+		int sum = 99999;
+		int size = 5;
+		float mean = sum / size;
+		Write.quickWrite("Mean is " + mean);
+		return mean;
 	}
 
 	/**

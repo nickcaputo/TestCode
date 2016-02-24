@@ -44,7 +44,7 @@ public class PlayTest {
 
 	public static void main(String[] args) {
 		long currentTime = System.currentTimeMillis();
-		
+
 		runThisStuff();
 
 		long futureTime = System.currentTimeMillis();
@@ -54,15 +54,15 @@ public class PlayTest {
 	private static void runThisStuff() {
 		// addToQueue();
 
-		// s.getMaxProfit(new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 });
+//		getMaxProfit(new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 });
 
 		Write.quickWrite(compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
 
-		replaceSpaces("Mr Haim Style    ", 13); // 0-1 ms
-
-		checkSteps(1999);
-
-		reverseString("Ripley");
+//		replaceSpaces("Mr Haim Style    ", 13); // 0-1 ms
+//
+//		checkSteps(1999);
+//
+//		reverseString("Ripley");
 
 		// log3(81); // takes 3-7 ms
 
@@ -78,6 +78,10 @@ public class PlayTest {
 				{ 1, 1, 1, 1, 0 } };
 
 		setZeroes(array);
+
+		// String paint = "paintcan";
+		// String can = "intcanpa";
+		// Write.quickWrite(isStringRotation(paint, can));
 	}
 
 	/**
@@ -231,8 +235,7 @@ public class PlayTest {
 	 * 
 	 * @param mxnArray
 	 */
-	public static int[][] setZeroes(int[][] mxnArray) {
-		int[][] toChange = mxnArray.clone();
+	public static void setZeroes(int[][] mxnArray) {
 		int columns = mxnArray.length;
 		int rows = mxnArray[0].length;
 		List<Integer> colsToChange = new ArrayList<>();
@@ -253,20 +256,19 @@ public class PlayTest {
 		// change columns to 0
 		for (int i = 0; i < colsToChange.size(); i++) {
 			for (int j = 0; j < rows; j++) {
-				toChange[colsToChange.get(i)][j] = 0;
+				mxnArray[colsToChange.get(i)][j] = 0;
 			}
 		}
 
 		// change rows to 0
 		for (int i = 0; i < rowsToChange.size(); i++) {
 			for (int j = 0; j < columns; j++) {
-				toChange[j][rowsToChange.get(i)] = 0;
+				mxnArray[j][rowsToChange.get(i)] = 0;
 			}
 		}
 
 		System.out.println("\nAfter:\n");
 		print2DArray(mxnArray);
-		return toChange;
 	}
 
 	/**
@@ -281,6 +283,12 @@ public class PlayTest {
 			}
 			System.out.println();
 		}
+	}
+
+	public static boolean isStringRotation(String original, String suspectedRotation) {
+		StringBuilder builder = new StringBuilder(original);
+		builder.append(original);
+		return builder.toString().contains(suspectedRotation);
 	}
 
 	/**

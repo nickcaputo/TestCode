@@ -49,9 +49,9 @@ public class Write {
 	 * An overloaded convenience method to call the writeLine method.
 	 * 
 	 * @param message,
-	 *            a short to write to the console.
+	 *            a boolean to write to the console.
 	 */
-	public static void writeLine(short message) {
+	public static void writeLine(boolean message) {
 		writeLine("" + message);
 	}
 
@@ -83,6 +83,10 @@ public class Write {
 	 * @param message
 	 */
 	public static void quickWrite(long message) {
+		quickWrite("" + message);
+	}
+	
+	public static void quickWrite(boolean message) {
 		quickWrite("" + message);
 	}
 

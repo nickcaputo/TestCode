@@ -30,36 +30,39 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import tools.Node;
+import materials.Node;
 
 import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import utilities.Constants;
 import utilities.StringCountComparator;
 import utilities.Write;
 
 public class PlayTest {
 
-	private static final int PORT = 4248;
-
 	public static void main(String[] args) {
-
-		PlayTest s = new PlayTest();
-
 		long currentTime = System.currentTimeMillis();
+		
+		runThisStuff();
 
+		long futureTime = System.currentTimeMillis();
+		Write.quickWrite("This took " + (futureTime - currentTime) + " ms.");
+	}
+
+	private static void runThisStuff() {
 		// addToQueue();
 
 		// s.getMaxProfit(new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 });
 
-		Write.quickWrite(s.compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
+		Write.quickWrite(compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
 
-		s.replaceSpaces("Mr Haim Style    ", 13); // 0-1 ms
+		replaceSpaces("Mr Haim Style    ", 13); // 0-1 ms
 
-		s.checkSteps(1999);
+		checkSteps(1999);
 
-		s.reverseString("Ripley");
+		reverseString("Ripley");
 
 		// log3(81); // takes 3-7 ms
 
@@ -70,11 +73,11 @@ public class PlayTest {
 		// hasher();
 
 		// s.examineDoubles();
-		
-		long futureTime = System.currentTimeMillis();
 
-		Write.quickWrite("This took " + (futureTime - currentTime) + " ms.");
+		int[][] array = new int[][] { { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 0, 1, 1 }, { 1, 1, 1, 1, 1 },
+				{ 1, 1, 1, 1, 0 } };
 
+		setZeroes(array);
 	}
 
 	/**
@@ -85,7 +88,7 @@ public class PlayTest {
 	 *            string to reverse
 	 * @return new String of reversed input
 	 */
-	public String reverseString(String string) {
+	public static String reverseString(String string) {
 		char[] array = string.toCharArray();
 		char[] reversed = new char[array.length];
 
@@ -108,7 +111,7 @@ public class PlayTest {
 	 *            the length of the substring to consider when replacing
 	 *            spaces @return, the string with all spaces replaced
 	 */
-	public String replaceSpaces(String input, int inputLength) {
+	public static String replaceSpaces(String input, int inputLength) {
 		char[] array = new char[input.length()];
 		int arrCount = 0;
 
@@ -168,7 +171,7 @@ public class PlayTest {
 	 *            the amount of steps in the staircase @return, how many steps
 	 *            to take to get to the top
 	 */
-	private int checkSteps(int sizeOfStaircase) {
+	private static int checkSteps(int sizeOfStaircase) {
 
 		if (sizeOfStaircase <= 3) {
 			return 1;
@@ -187,7 +190,7 @@ public class PlayTest {
 	 *            String to compress @return, compressed string, or the same
 	 *            string if compression would not make it shorter
 	 */
-	public String compress(String input) {
+	public static String compress(String input) {
 		int inputLength = input.length();
 		if (inputLength <= 2) {
 			// System.out.println("Returning due to length.");
@@ -221,28 +224,86 @@ public class PlayTest {
 			return compressedString;
 		}
 	}
-	
+
 	/**
-	 * Searches a tree for a goal node in a depth first manner.
-	 * This problem is recursive.
+	 * Given a 2D array of M x N dimensions, this sets the entire row and column
+	 * to 0 if a 0 is
+	 * 
+	 * @param mxnArray
 	 */
-	public static Node traverseTree(Node node, int goal) {
-			if (node.data == goal) {
-				return node;
-			} else if (node.left != null) {
-				Node returned = traverseTree(node.left, goal);
-				if (returned.data == goal) {
-					return returned;
-				}
-			} else if (node.right != null) {
-				Node returned = traverseTree(node.right, goal);
-				if (returned.data == goal) {
-					return returned;
+	public static int[][] setZeroes(int[][] mxnArray) {
+		int[][] toChange = mxnArray.clone();
+		int columns = mxnArray.length;
+		int rows = mxnArray[0].length;
+		List<Integer> colsToChange = new ArrayList<>();
+		List<Integer> rowsToChange = new ArrayList<>();
+
+		System.out.println("Before:\n");
+		print2DArray(mxnArray);
+
+		for (int i = 0; i < columns; i++) { // iterates through columns
+			for (int j = 0; j < rows; j++) { // iterates through rows
+				if (mxnArray[i][j] == 0) {
+					colsToChange.add(i);
+					rowsToChange.add(j);
 				}
 			}
-			
-			// called when tree is searched completely
-			return null;
+		}
+
+		// change columns to 0
+		for (int i = 0; i < colsToChange.size(); i++) {
+			for (int j = 0; j < rows; j++) {
+				toChange[colsToChange.get(i)][j] = 0;
+			}
+		}
+
+		// change rows to 0
+		for (int i = 0; i < rowsToChange.size(); i++) {
+			for (int j = 0; j < columns; j++) {
+				toChange[j][rowsToChange.get(i)] = 0;
+			}
+		}
+
+		System.out.println("\nAfter:\n");
+		print2DArray(mxnArray);
+		return toChange;
+	}
+
+	/**
+	 * Prints an evenly spaced 2D array.
+	 * 
+	 * @param print
+	 */
+	public static void print2DArray(int[][] print) {
+		for (int i = 0; i < print.length; i++) {
+			for (int j = 0; j < print[0].length; j++) {
+				System.out.print(print[i][j]);
+			}
+			System.out.println();
+		}
+	}
+
+	/**
+	 * Searches a tree for a goal node in a depth first manner. This problem is
+	 * recursive.
+	 */
+	public static Node traverseTree(Node node, int goal) {
+		if (node.data == goal) {
+			return node;
+		} else if (node.left != null) {
+			Node returned = traverseTree(node.left, goal);
+			if (returned.data == goal) {
+				return returned;
+			}
+		} else if (node.right != null) {
+			Node returned = traverseTree(node.right, goal);
+			if (returned.data == goal) {
+				return returned;
+			}
+		}
+
+		// called when tree is searched completely
+		return null;
 	}
 
 	/**
@@ -250,7 +311,7 @@ public class PlayTest {
 	 * the content to a HashMap, keeping track of duplicates and indicating how
 	 * many duplicates are in the map.
 	 */
-	public void hasher() {
+	public static void hasher() {
 		HashMap<String, Integer> hasher = new HashMap<>();
 
 		Scanner console = new Scanner(System.in);
@@ -285,13 +346,13 @@ public class PlayTest {
 	/**
 	 * Establishes a connection to a MySQL database.
 	 */
-	public void setConnectionToDatabase() {
+	public static void setConnectionToDatabase() {
 		Connection conn = null;
 		String dbUrl = "jdbc:mysql://localhost:3306/";
 		String name = "heroes";
 		String driver = "com.mysql.jdbc.Driver";
 		String username = "root";
-		String pass = "Printer1!@";
+		String pass = "abstracted";
 
 		try {
 			Class.forName(driver);
@@ -318,7 +379,7 @@ public class PlayTest {
 	 * @param stocks,
 	 *            the list of stocks to check for the maximum profit
 	 */
-	public void getMaxProfit(int[] stocks) {
+	public static void getMaxProfit(int[] stocks) {
 
 		if (stocks.length < 2) {
 			throw new IllegalArgumentException("You have to have at least two prices to sell at.");
@@ -347,7 +408,7 @@ public class PlayTest {
 	/**
 	 * Test method adding items to a queue.
 	 */
-	public void addToQueue() {
+	public static void addToQueue() {
 		TreeSet<String> queues = new TreeSet<>();
 
 		queues.add("S");
@@ -383,7 +444,7 @@ public class PlayTest {
 	/**
 	 * Executes the calculator on a windows machine every 30 seconds.
 	 */
-	public void executeCalc30Seconds() {
+	public static void executeCalc30Seconds() {
 		while (true) {
 
 			try {
@@ -399,7 +460,7 @@ public class PlayTest {
 	 * A general use method, compares whether an int and a double.floor() are
 	 * equal.
 	 */
-	public void examineDoubles() {
+	public static void examineDoubles() {
 		double numberPower = Math.sqrt(8);
 		System.out.println(numberPower);
 		System.out.println(Math.floor(numberPower));
@@ -428,7 +489,7 @@ public class PlayTest {
 	 * @param shift,
 	 *            how much to shift this bit left/right
 	 */
-	private void bitManipulate(long bit, int shift) {
+	private static void bitManipulate(long bit, int shift) {
 		System.out.println("Input integer (binary): " + Long.toBinaryString(bit));
 		System.out.println("Input shift (binary)  : " + Long.toBinaryString(shift) + System.lineSeparator());
 
@@ -454,7 +515,7 @@ public class PlayTest {
 	/**
 	 * Prints the label for the location in memory that this program is using.
 	 */
-	private void getAndDisplayMemoryId() {
+	private static void getAndDisplayMemoryId() {
 		String id = ManagementFactory.getRuntimeMXBean().getClassPath();
 		System.out.println(id);
 	}
@@ -462,7 +523,7 @@ public class PlayTest {
 	/**
 	 * Tests an experimental regular expression for use in TCP/IP.
 	 */
-	private void testExperimentalRegex() {
+	private static void testExperimentalRegex() {
 		final String SEPARATOR = "§¶§";
 		System.out.println(SEPARATOR);
 
@@ -476,11 +537,9 @@ public class PlayTest {
 	/**
 	 * Recieves an image over the network and converts the byte[] to files
 	 */
-	private void imageProcessing() {
+	private static void imageProcessing() {
 		try {
-			synchronized (this) {
-				this.wait(1000);
-			}
+			Thread.sleep(1000);
 		} catch (InterruptedException err) {
 			err.printStackTrace();
 		}
@@ -491,7 +550,7 @@ public class PlayTest {
 			/*
 			 * create welcoming socket at port on client
 			 */
-			ServerSocket welcomeSocket = new ServerSocket(PORT);
+			ServerSocket welcomeSocket = new ServerSocket(Constants.PORT);
 			int stockNumber = 100002;
 
 			File image = new File(stockNumber + "-" + fileCounter + ".jpg");
@@ -536,7 +595,7 @@ public class PlayTest {
 	 *            the total bytes in the array
 	 * @return the byte array of all files combined
 	 */
-	private byte[] convertFileToBytes(int stockNumber, List<Integer> locationsOfFiles, int totalBytes) {
+	private static byte[] convertFileToBytes(int stockNumber, List<Integer> locationsOfFiles, int totalBytes) {
 		byte[] byter = new byte[totalBytes];
 		int fileOffset = 0;
 
@@ -579,7 +638,8 @@ public class PlayTest {
 	 *            the Server Socket that the tunnel is present on.
 	 * 
 	 */
-	private void sendData(byte[] toSend, List<Integer> locationsOfFiles, int stockNumber, ServerSocket welcomeSocket) {
+	private static void sendData(byte[] toSend, List<Integer> locationsOfFiles, int stockNumber,
+			ServerSocket welcomeSocket) {
 		try {
 			Socket connectionSocket = welcomeSocket.accept(); // wait
 			// to
@@ -619,7 +679,7 @@ public class PlayTest {
 	/**
 	 * Begins a sample clock out function for someone with the Timecard app.
 	 */
-	private void startClockOut() {
+	private static void startClockOut() {
 		File folder = new File("test folder 3");
 		try {
 			String re = seeIfStillClockedIn(folder);
@@ -649,7 +709,7 @@ public class PlayTest {
 	 * @return the string with their clock in information
 	 * @throws IOException
 	 */
-	private String seeIfStillClockedIn(File folder) throws IOException {
+	private static String seeIfStillClockedIn(File folder) throws IOException {
 		String csvPath = folder.getPath() + "/timecard1.csv";
 		String csvLine = "";
 
@@ -690,7 +750,7 @@ public class PlayTest {
 	 * @throws ParseException,
 	 *             in case the time strings are not formatted correctly
 	 */
-	private String[] getClockOutTime(String earlier, String later, long maxClock) throws ParseException {
+	private static String[] getClockOutTime(String earlier, String later, long maxClock) throws ParseException {
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.US);
 		Date earlyDate = format.parse(earlier);
 		Date laterDate = format.parse(later);
@@ -713,7 +773,7 @@ public class PlayTest {
 		} else {
 			laterDate.setTime(earlyDate.getTime() + millisMaxClock);
 			differenceToUse = millisMaxClock;
-			clockOutDate = formattedDate(laterDate, format);
+			clockOutDate = format.format(laterDate);
 			System.out.println("Clocking out with the maxClock value.  Clock out date is set to " + clockOutDate);
 		}
 
@@ -727,15 +787,10 @@ public class PlayTest {
 		return timeData;
 	}
 
-	private String formattedDate(Date date, DateFormat forTime) {
-		String formattedDate = forTime.format(date);
-		return formattedDate;
-	}
-
 	/**
 	 * Creates a new folder and file within it.
 	 */
-	private void logInTextFile() {
+	private static void logInTextFile() {
 		try {
 			File file = new File("test folder/test.txt");
 			file.createNewFile();
@@ -759,7 +814,7 @@ public class PlayTest {
 		}
 	}
 
-	private void addPictureInFolderToVFP9Database() {
+	private static void addPictureInFolderToVFP9Database() {
 		try {
 			BufferedWriter fileMaker = new BufferedWriter(new FileWriter("pictures7/this.txt"));
 			fileMaker.write("This is a test");
@@ -782,7 +837,7 @@ public class PlayTest {
 		}
 	}
 
-	private String getDateTime() {
+	private static String getDateTime() {
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss");
 

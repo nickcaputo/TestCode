@@ -1,4 +1,4 @@
-package tools;
+package materials;
 
 /**
  * A (very) simple class to build off of for a node in a tree.  

@@ -10,7 +10,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -82,6 +84,12 @@ public class PlayTest {
 				{ 1, 1, 1, 1, 0 } };
 
 		setZeroes(array);
+
+		try {
+			readFromConsole();
+		} catch (FileNotFoundException err) {
+			err.printStackTrace();
+		}
 
 		// String paint = "paintcan";
 		// String can = "intcanpa";
@@ -193,6 +201,38 @@ public class PlayTest {
 			return 1;
 		} else {
 			return 1 + checkSteps(sizeOfStaircase - 3);
+		}
+
+	}
+
+	/**
+	 * Uses a scanner to read from a file or system.in, printing the results.
+	 * @throws FileNotFoundException
+	 */
+	private static void readFromConsole() throws FileNotFoundException {
+		Scanner console = new Scanner(System.in);
+
+		System.out.println(console.nextLine());
+		
+		console.close();
+	}
+
+	/**
+	 * Opens a file and reads input from it.
+	 */
+	private static void inputPrint() {
+		File file = new File("C:/TWL98.txt");
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+
+			for (int i = 0; i < 168001; i++) {
+				System.out.println(reader.readLine());
+			}
+
+			reader.close();
+		} catch (IOException err) {
+			err.printStackTrace();
 		}
 
 	}

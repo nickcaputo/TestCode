@@ -85,6 +85,8 @@ public class PlayTest {
 
 		setZeroes(array);
 
+		Math.pow(3, 9);
+
 		try {
 			readFromConsole();
 		} catch (FileNotFoundException err) {
@@ -207,13 +209,17 @@ public class PlayTest {
 
 	/**
 	 * Uses a scanner to read from a file or system.in, printing the results.
+	 * 
 	 * @throws FileNotFoundException
 	 */
 	private static void readFromConsole() throws FileNotFoundException {
-		Scanner console = new Scanner(System.in);
+		Scanner console = new Scanner(new File("C:/TWL98.txt"));
 
-		System.out.println(console.nextLine());
-		
+		while (console.hasNextLine()) {
+			System.out.println(compress(console.nextLine()));
+		}
+		System.out.println(compress("aaavvvppp"));
+
 		console.close();
 	}
 

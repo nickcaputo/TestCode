@@ -207,6 +207,21 @@ public class PlayTest {
 
 	}
 
+	private static void bufferedReaderFromConsole() {
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			System.out.println("Ask a question!");
+			String write = in.readLine();
+			StringBuilder buffer = new StringBuilder();
+
+			buffer.append(write);
+			buffer.append(" is a pretty good question!");
+			System.out.println(buffer.toString());
+		} catch (IOException err) {
+			err.printStackTrace();
+		}
+	}
+
 	/**
 	 * Uses a scanner to read from a file or system.in, printing the results.
 	 * 

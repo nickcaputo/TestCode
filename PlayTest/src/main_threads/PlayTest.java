@@ -1,6 +1,5 @@
 package main_threads;
 
-import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -12,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,6 +18,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import materials.Node;
 
@@ -45,57 +46,201 @@ import utilities.Write;
 
 public class PlayTest {
 
+	private static char SEPARATOR = '^';
+	private static char ITEM_SEP = '|';
+
 	public static void main(String[] args) {
 		long currentTime = System.currentTimeMillis();
 
 		runThisStuff();
 
-		Rectangle rect = new Rectangle(1, 0, 13, 9);
-		Write.quickWrite(rect.x);
-
 		long futureTime = System.currentTimeMillis();
-		Write.quickWrite("This took " + (futureTime - currentTime) + " ms.");
+		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");
 	}
 
+	/**
+	 * Place all content you want to run in this method. Treat this as the
+	 * main() method.
+	 */
 	private static void runThisStuff() {
-		// addToQueue();
+		Connection root = getConnectionToPPro("M:/ProspectorPro.mdb", "MiguelAngel");
+		Scanner console = new Scanner(System.in);
 
-		// getMaxProfit(new int[] { 9, 18, 7, 9, 20, 10, 3, 9, 29 });
+		while (true) {
+			ResultSet contacts = queryDatabase(console, root, 100);
 
-		Write.quickWrite(compress("abcdefggghhhiiijjjkkkklllmmmnnnoopppqqqrrrssstttuuuvvvwwwxxxyyyzzzzz"));
+			boolean contactsExist = contacts != null;
+			Write.writeLine(contactsExist);
 
-		// replaceSpaces("Mr Haim Style ", 13); // 0-1 ms
-		//
-		// checkSteps(1999);
-		//
-		// reverseString("Ripley");
-
-		// log3(81); // takes 3-7 ms
-
-		// setConnectionToDatabase();
-
-		// executeCalc30Seconds();
-
-		// hasher();
-
-		// s.examineDoubles();
-
-		int[][] array = new int[][] { { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 0, 1, 1 }, { 1, 1, 1, 1, 1 },
-				{ 1, 1, 1, 1, 0 } };
-
-		setZeroes(array);
-
-		Math.pow(3, 9);
-
-		try {
-			readFromConsole();
-		} catch (FileNotFoundException err) {
-			err.printStackTrace();
+			if (contactsExist) {
+				try {
+					readResultSet(contacts);
+				} catch (SQLException err) {
+					Write.writeLine("SQLException: " + err.getMessage());
+				}
+			}
 		}
 
-		// String paint = "paintcan";
-		// String can = "intcanpa";
-		// Write.quickWrite(isStringRotation(paint, can));
+		// Write.writeLine(getValue("TRADINGFEW", "LGXWEV"));
+
+		// Write.writeLine(serializeContact(contacts, "qs", "test request",
+		// false));
+	}
+
+	private static Connection getConnectionToPPro(String path, String pass) {
+		Write.writeLine("Now loading database into memory");
+		try {
+			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+
+			long current = System.currentTimeMillis();
+			Connection root = DriverManager.getConnection("jdbc:ucanaccess://" + path + ";memory:false", "", pass);
+			long future = System.currentTimeMillis();
+
+			Write.writeLine("Loading the database took " + (future - current) + " ms.");
+
+			return root;
+		} catch (SQLException err) {
+			Write.writeLine("SQLException: " + err.getMessage());
+			return null;
+		} catch (ClassNotFoundException err) {
+			Write.writeLine("Class not found.");
+			return null;
+		}
+	}
+
+	private static ResultSet queryDatabase(Scanner console, Connection root, int amount) {
+		Write.writeLine("Enter an SQL Query: ");
+		String getContactsSQL = console.nextLine();
+
+		try {
+			PreparedStatement statement = root.prepareStatement(getContactsSQL);
+			// statement.setInt(1, amount);
+
+			long current = System.currentTimeMillis();
+			ResultSet set = statement.executeQuery();
+			long future = System.currentTimeMillis();
+
+			Write.writeLine("Query took " + (future - current) + " ms.");
+
+			return set;
+		} catch (SQLException err) {
+			Write.writeLine("SQLException: " + err.getMessage());
+			return null;
+		} finally {
+			Write.writeLine("Repeating this method");
+		}
+	}
+
+	private static void readResultSet(ResultSet set) throws SQLException {
+		ResultSetMetaData md = set.getMetaData();
+
+		while (set.next()) {
+			for (int i = 1; i <= md.getColumnCount(); i++) {
+				System.out.print(" " + set.getObject(i));
+			}
+			System.out.println();
+		}
+	}
+
+	private static String serializeContact(ResultSet contactsToShow, String commandSelection, String notesToSend,
+			boolean quickSearchingMoreContacts) {
+
+		/*
+		 * the amount of items to get at one time should we be selecting the
+		 * "Get More Contacts" feature
+		 */
+		int limit = 100;
+
+		try {
+			StringBuilder contactItemsBuilder = new StringBuilder();
+			int contactNumber = 0;
+			while (contactsToShow.next()) {
+
+				if ((quickSearchingMoreContacts && contactNumber > limit)
+						|| (!quickSearchingMoreContacts && contactNumber != 0)) {
+					contactItemsBuilder.append(ITEM_SEP);
+				}
+
+				if (!quickSearchingMoreContacts || (quickSearchingMoreContacts && contactNumber >= limit)) {
+
+					contactItemsBuilder.append(SEPARATOR).append("Contact ").append(contactNumber).append(" ")
+							.append(SEPARATOR).append("custid:" + contactsToShow.getString("CustId")).append(SEPARATOR)
+							.append("fName:" + contactsToShow.getString("Fname")).append(SEPARATOR)
+							.append("lName:" + contactsToShow.getString("Lname")).append(SEPARATOR)
+							.append("email:" + contactsToShow.getString("Email")).append(SEPARATOR)
+							.append("cellphone:" + contactsToShow.getString("OtherPhone")).append(SEPARATOR)
+							.append("lookingfor:" + contactsToShow.getString("Style")).append(SEPARATOR)
+							.append("timeframe:" + contactsToShow.getString("Title")).append(SEPARATOR)
+							.append("mi:" + contactsToShow.getString("Middle")).append(SEPARATOR)
+							.append("class:" + contactsToShow.getString("Class")).append(SEPARATOR)
+							.append("score:" + contactsToShow.getString("Score")).append(SEPARATOR)
+							.append("company:" + contactsToShow.getString("Company")).append(SEPARATOR).append("notes:")
+							.append(notesToSend);
+
+					if (!(commandSelection.equals("qs") || commandSelection.equals("qsMore")
+							|| commandSelection.equals("search"))) {
+						contactItemsBuilder.append(SEPARATOR).append("address:")
+								.append(contactsToShow.getString("Address") + SEPARATOR).append("city:")
+								.append(contactsToShow.getString("City")).append(SEPARATOR)
+								.append("state:" + contactsToShow.getString("State")).append(SEPARATOR)
+								.append("zipCode:" + contactsToShow.getString("ZipCode")).append(SEPARATOR)
+								.append("budget:" + contactsToShow.getString("Country")).append(SEPARATOR)
+								.append("niche:" + contactsToShow.getString("Industry")).append(SEPARATOR)
+								.append("homephone:" + contactsToShow.getString("HomPhone")).append(SEPARATOR)
+								.append("workphone:" + contactsToShow.getString("WorkPhone")).append(SEPARATOR);
+					}
+
+				}
+
+				contactNumber++;
+			}
+
+			String contactItems = contactItemsBuilder.toString();
+			return contactItems;
+		} catch (SQLException err) {
+			err.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * // example key = "TRADINGFEW" // example code = "LGXWEV" // deciphered
+	 * int = 709 Could be more efficient.
+	 * 
+	 * @param key
+	 * @param code
+	 * @return the deciphered code
+	 */
+	public static int getValue(String key, String code) {
+		char[] lettersInKey = key.toCharArray();
+		char[] codeArray = code.toCharArray();
+		String output = "0";
+
+		// checking the inputs
+		if (lettersInKey.length != 10) {
+			throw new IllegalArgumentException("Must have key of length 10");
+		}
+
+		// construct the output
+		for (char item : codeArray) {
+			// iterate through lettersInKey finding it
+			for (int i = 0; i < lettersInKey.length; i++) {
+				int toShow = ((i + 1) % 10);
+				if (lettersInKey[i] == item) {
+					output += "" + toShow;
+				}
+			}
+		}
+
+		return new Integer(output);
+	}
+
+	private static void randomNumbers() {
+		Random rand = new Random();
+
+		for (int i = 0; i <= 16; i++) {
+			System.out.println(rand.nextInt(16) + 1);
+		}
 	}
 
 	/**
@@ -556,7 +701,7 @@ public class PlayTest {
 	 *            the number to log
 	 * @return the number in log base 3
 	 */
-	public double log3(double number) {
+	public static double log3(double number) {
 		double log = (Math.log(number) / Math.log(3));
 		System.out.println(log);
 		return log;

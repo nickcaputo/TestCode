@@ -12,7 +12,7 @@ public class Write {
 	 *            the string to print to the console
 	 */
 	public static void writeLine(String message) {
-		System.out.println("AT " + LocalDateTime.now().toString().replace('T', ' ') + ": " + message);
+		System.out.println(LocalDateTime.now().toString().replace('T', ' ') + ": " + message);
 	}
 
 	/**

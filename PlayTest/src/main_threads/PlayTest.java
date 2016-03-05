@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -50,19 +51,24 @@ public class PlayTest {
 	private static char ITEM_SEP = '|';
 
 	public static void main(String[] args) {
-		long currentTime = System.currentTimeMillis();
 
-		runThisStuff();
+		long currentTime = System.currentTimeMillis();
+		
+		int[] xs = new int[] {1, 2, 3};
+		int[] ys = new int[] {1, 2, 3};
+		int[] times = new int[] {4, 5, 5};
+
+		Write.writeLine(turretDefense(xs, ys, times));
 
 		long futureTime = System.currentTimeMillis();
 		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");
 	}
 
 	/**
-	 * Place all content you want to run in this method. Treat this as the
-	 * main() method.
+	 * Allows you to continuously run SQL Queries on a database and see the
+	 * results in the console!
 	 */
-	private static void runThisStuff() {
+	private static void runSQLQueriesOnDatabase() {
 		Connection root = getConnectionToPPro("M:/ProspectorPro.mdb", "MiguelAngel");
 		Scanner console = new Scanner(System.in);
 
@@ -81,7 +87,7 @@ public class PlayTest {
 			}
 		}
 
-//		 Write.writeLine(isALegalDate(2015, 02, 28));
+		// Write.writeLine(isALegalDate(2015, 02, 28));
 
 		// Write.writeLine(getValue("TRADINGFEW", "LGXWEV"));
 
@@ -214,19 +220,21 @@ public class PlayTest {
 		if ((month <= 7 && month % 2 == 0) || (month >= 8 && month % 2 == 1)) {
 			if (month == 2) {
 				if (isALeapYear(year)) {
-					System.out.println("Is a february in leap year");
+					// System.out.println("Is a february in leap year");
 					return day <= 29;
 				} else {
-					System.out.println("Is a feburary in a normal year");
+					// System.out.println("Is a feburary in a normal year");
 					return day <= 28;
 				}
 			}
 
-			System.out.println("Is an even month before July (but not February) or an odd month after August");
+			// System.out.println("Is an even month before July (but not
+			// February) or an odd month after August");
 			return day <= 30;
 		} else {
 
-			System.out.println("Is an even month after August, or odd month before july");
+			// System.out.println("Is an even month after August, or odd month
+			// before july");
 			return day <= 31;
 		}
 	}
@@ -1096,6 +1104,50 @@ public class PlayTest {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss");
 
 		return format.format(date);
+	}
+
+	/*
+	 * 
+	 * 
+	 * 
+	 * TOPCODER METHODS
+	 * 
+	 * 
+	 * 
+	 */
+
+	/**
+	 * Calculates, given x and y coordinates for a given set of missiles coming
+	 * in at the user, the first target they miss at if it takes 1 second to
+	 * move in the X or Y direction 1 value. Returns -1 if all the targets are
+	 * hit!
+	 * 
+	 * @param xs
+	 * @param ys
+	 * @param times
+	 * @return
+	 */
+	private static int turretDefense(int[] xs, int[] ys, int[] times) {
+		int setX = 0;
+		int setY = 0;
+		int time = 0;
+		// int difference;
+
+		for (int i = 0; i < xs.length; i++) {
+			int moveX = Math.abs(setX - xs[i]);
+			int moveY = Math.abs(setY - ys[i]);
+			int timeToMove = times[i] - time;
+
+			if ((moveX + moveY) > timeToMove) {
+				return i;
+			}
+
+			setX = moveX;
+			setY = moveY;
+			time = (moveX + moveY);
+
+		}
+		return -1;
 	}
 
 }

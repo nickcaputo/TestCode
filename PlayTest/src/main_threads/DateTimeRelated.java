@@ -1,5 +1,8 @@
 package main_threads;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DateTimeRelated {
 
 	/**
@@ -46,6 +49,15 @@ public class DateTimeRelated {
 			// before july");
 			return day <= 31;
 		}
+	}
+	
+
+
+	private static String getDateTime() {
+		Date date = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss");
+
+		return format.format(date);
 	}
 
 }

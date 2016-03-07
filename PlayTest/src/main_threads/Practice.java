@@ -2,26 +2,55 @@ package main_threads;
 
 import java.util.*;
 
+import utilities.Write;
+
 class Solution {
+	
+	/**
+	 * // example key = "TRADINGFEW" // example code = "LGXWEV" // deciphered
+	 * int = 709 Could be more efficient by dynamically multiplying digits by
+	 * 10, 100, etc. then adding them all together, instead of creating a new
+	 * integer from a string.
+	 * 
+	 * @param key
+	 * @param code
+	 * @return the deciphered code
+	 */
+	public static int decodeIntegerFromString(String key, String code) {
+		char[] lettersInKey = key.toCharArray();
+		char[] codeArray = code.toCharArray();
+		String output = "0";
 
-	public static void main(String[] args) {
-		long startTime = System.currentTimeMillis();
+		// checking the inputs
+		if (lettersInKey.length != 10) {
+			throw new IllegalArgumentException("Must have key of length 10");
+		}
 
-		runThis();
+		// construct the output
+		for (char item : codeArray) {
+			// iterate through lettersInKey finding it
+			for (int i = 0; i < lettersInKey.length; i++) {
+				int toShow = ((i + 1) % 10);
+				if (lettersInKey[i] == item) {
+					output += "" + toShow;
+				}
+			}
+		}
 
-		long completeAt = System.currentTimeMillis();
-
-		Write.writeLine("This took " + (completeAt - startTime) + " ms.");
-
+		return new Integer(output);
 	}
 
-	private static void runThis() {
-		Solution s = new Solution();
-		double power3 = Math.pow(3, 14);
-		s.print(compress("aaaaabbbbbcccccdddddeeeee"));
-		s.printConsole();
-		Write.writeLine(s.log3(power3));
-		String pass = "";
+	/**
+	 * Opens a Scanner object and reads from System.in or from a file.
+	 */
+	private void printConsole() {
+		Scanner console = new Scanner(System.in);
+
+		while (console.hasNextLine()) {
+			Write.quickWrite(StringRelated.compress(console.nextLine()));
+		}
+
+		console.close();
 	}
 
 	
@@ -49,6 +78,8 @@ class Solution {
 	// 1: home search product
 	// 1: search product cart
 	// 2: home browse productS
+	 * 
+	 * This could be completed.
 	*/
 	public static String findMostCommon(Scanner console) {
 		HashMap<String, String> map = new HashMap<>();
@@ -100,92 +131,127 @@ class Solution {
 
 		return pathToReturn;
 	}
+	
+
 
 	/**
+	 * Calculates, given x and y coordinates for a given set of missiles coming
+	 * in at the user, the first target they miss at if it takes 1 second to
+	 * move in the X or Y direction 1 value. Returns -1 if all the targets are
+	 * hit!
 	 * 
+	 * @param xs
+	 * @param ys
+	 * @param times
+	 * @return
 	 */
-	public void print(String message) {
-		Write.writeLine(message);
-		HashMap<Integer, Character> map = new HashMap<>();
-		map.put(1, 'a');
+	private static int turretDefense(int[] xs, int[] ys, int[] times) {
+		int setX = 0;
+		int setY = 0;
+		int time = 0;
+		// int difference;
+
+		for (int i = 0; i < xs.length; i++) {
+			int moveX = Math.abs(setX - xs[i]);
+			int moveY = Math.abs(setY - ys[i]);
+			int timeToMove = times[i] - time;
+
+			if ((moveX + moveY) > timeToMove) {
+				return i;
+			}
+
+			setX = moveX;
+			setY = moveY;
+			time = (moveX + moveY);
+
+		}
+		return -1;
 	}
+	
 
 	/**
-	 * Opens a Scanner object and reads from System.in or from a file.
+	 * Given a set of stock values, finds the maximum profit we could make by
+	 * selling them at any point.
+	 * 
+	 * @param stocks
+	 *            , the list of stocks to check for the maximum profit
 	 */
-	private void printConsole() {
-		Scanner console = new Scanner(System.in);
+	public static void getMaxProfit(int[] stocks) {
 
-		while (console.hasNextLine()) {
-			Write.quickWrite(compress(console.nextLine()));
+		if (stocks.length < 2) {
+			throw new IllegalArgumentException(
+					"You have to have at least two prices to sell at.");
 		}
 
-		console.close();
-	}
+		int maxProfit = stocks[1] - stocks[0];
+		int minPrice = stocks[0];
 
-	private double log3(double number) {
-		return Math.log(number) / Math.log(3);
-	}
+		for (int i = 1; i < stocks.length; i++) {
 
-	/**
-	 * Compresses a string by removing repeating characters and replacing them
-	 * with the character followed by the amount of times it is repeated.
-	 * Example: Input: "aaaaaaabbbbbcccxxxyyyzzz", Output: "a7b5c3x3y3z3"
-	 * 
-	 * @param input,
-	 *            String to compress @return, compressed string, or the same
-	 *            string if compression would not make it shorter
-	 */
-	public static String compress(String input) {
-		int inputLength = input.length();
-		if (inputLength <= 2) {
-			// System.out.println("Returning due to length.");
-			return input;
-		}
+			int profit = stocks[i] - minPrice;
 
-		StringBuilder builder = new StringBuilder();
-		char focus = input.charAt(0); // set to a
-		long count = 1;
+			if (stocks[i] < minPrice) {
+				minPrice = stocks[i];
+			}
 
-		for (int i = 1; i < inputLength; i++) {
-			char point = input.charAt(i);
-			if (point == focus) {
-				// System.out.println("incrementing count");
-				count++;
-			} else {
-				// System.out.println("found new character in string");
-				builder.append("" + focus + count);
-				focus = point;
-				count = 1;
+			if (maxProfit < profit) {
+				maxProfit = profit;
 			}
 		}
 
-		// after reaching last point in the array
-		builder.append("" + focus + count);
+		System.out.println(maxProfit);
 
-		if (builder.length() >= inputLength) {
-			return input;
-		} else {
-			String compressedString = builder.toString();
-			return compressedString;
+	}
+	
+
+
+	/**
+	 * Test method adding items to a queue.
+	 */
+	public static void addToQueue() {
+		TreeSet<String> queues = new TreeSet<>();
+
+		queues.add("S");
+		queues.add("T");
+		queues.add("A");
+		queues.add("R");
+		queues.add("T");
+		queues.add("E");
+		queues.add("D");
+		queues.add("S");
+
+		System.out.println(queues.higher("R"));
+		SortedSet<String> headSet = queues.headSet("R");
+
+		System.out.println("\nHeadSet");
+		for (String element : headSet) {
+			System.out.println(element);
+		}
+
+		System.out.println("\n" + queues.size());
+
+		int size = queues.size();
+		Iterator<String> iterator = queues.iterator();
+		for (int i = 0; i < size; i++) {
+			if (iterator.hasNext() == true) {
+				System.out.println(iterator.next());
+			} else {
+				System.out.println("null");
+			}
 		}
 	}
-}
+	
 
-class Write {
-	public static void writeLine(String message) {
-		System.out.println(System.currentTimeMillis() + " | " + message);
-	}
-
-	public static void writeLine(double message) {
-		writeLine("" + message);
-	}
-
-	public static void quickWrite(String message) {
-		System.out.println(message);
-	}
-
-	public static void quickWrite(double message) {
-		System.out.println("" + message);
+	/**
+	 * Returns true if the second string is a rotation of the input
+	 * @param original
+	 * @param suspectedRotation
+	 * @return
+	 */
+	public static boolean isStringRotation(String original,
+			String suspectedRotation) {
+		StringBuilder builder = new StringBuilder(original);
+		builder.append(original);
+		return builder.toString().contains(suspectedRotation);
 	}
 }

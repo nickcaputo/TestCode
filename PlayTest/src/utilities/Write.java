@@ -19,9 +19,9 @@ public class Write {
 	 * An overloaded convenience method to call the writeLine method.
 	 * 
 	 * @param message,
-	 *            an integer to write to the console.
+	 *            a double to write to the console.
 	 */
-	public static void writeLine(int message) {
+	public static void writeLine(double message) {
 		writeLine("" + message);
 	}
 

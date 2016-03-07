@@ -205,4 +205,34 @@ public class SQLRelated {
 		}
 	}
 
+	/**
+	 * Establishes a connection to a MySQL database.
+	 */
+	public static void setConnectionToMySQLDb() {
+		Connection conn = null;
+		String dbUrl = "jdbc:mysql://localhost:3306/";
+		String name = "heroes";
+		String driver = "com.mysql.jdbc.Driver";
+		String username = "root";
+		String pass = "abstracted";
+
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(dbUrl + name, username, pass);
+			System.out.println("Connected to the database!");
+
+			String statement = "SELECT * FROM profiles";
+			PreparedStatement selector = conn.prepareStatement(statement);
+			ResultSet results = selector.executeQuery();
+
+			while (results.next()) {
+				String personName = results.getString("firstName") + ' '
+						+ results.getString("lastName");
+				System.out.println(personName);
+			}
+		} catch (Exception err) {
+			err.printStackTrace();
+		}
+	}
+
 }

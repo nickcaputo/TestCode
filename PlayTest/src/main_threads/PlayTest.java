@@ -47,45 +47,11 @@ import utilities.Write;
 
 public class PlayTest {
 
-	private static char SEPARATOR = '^';
-	private static char ITEM_SEP = '|';
-
 	public static void main(String[] args) {
 
 		long currentTime = System.currentTimeMillis();
-		
-		int[] xs = new int[] {1, 2, 3};
-		int[] ys = new int[] {1, 2, 3};
-		int[] times = new int[] {4, 5, 5};
 
-		Write.writeLine(turretDefense(xs, ys, times));
-
-		long futureTime = System.currentTimeMillis();
-		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");
-	}
-
-	/**
-	 * Allows you to continuously run SQL Queries on a database and see the
-	 * results in the console!
-	 */
-	private static void runSQLQueriesOnDatabase() {
-		Connection root = getConnectionToPPro("M:/ProspectorPro.mdb", "MiguelAngel");
-		Scanner console = new Scanner(System.in);
-
-		while (true) {
-			ResultSet contacts = queryDatabase(console, root, 100);
-
-			boolean contactsExist = contacts != null;
-			Write.writeLine(contactsExist);
-
-			if (contactsExist) {
-				try {
-					readResultSet(contacts);
-				} catch (SQLException err) {
-					Write.writeLine("SQLException: " + err.getMessage());
-				}
-			}
-		}
+		SQLRelated.runSQLQueriesOnDatabase();
 
 		// Write.writeLine(isALegalDate(2015, 02, 28));
 
@@ -93,150 +59,9 @@ public class PlayTest {
 
 		// Write.writeLine(serializeContact(contacts, "qs", "test request",
 		// false));
-	}
 
-	private static Connection getConnectionToPPro(String path, String pass) {
-		Write.writeLine("Now loading database into memory");
-		try {
-			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-
-			long current = System.currentTimeMillis();
-			Connection root = DriverManager.getConnection("jdbc:ucanaccess://" + path + ";memory:false", "", pass);
-			long future = System.currentTimeMillis();
-
-			Write.writeLine("Loading the database took " + (future - current) + " ms.");
-
-			return root;
-		} catch (SQLException err) {
-			Write.writeLine("SQLException: " + err.getMessage());
-			return null;
-		} catch (ClassNotFoundException err) {
-			Write.writeLine("Class not found.");
-			return null;
-		}
-	}
-
-	private static ResultSet queryDatabase(Scanner console, Connection root, int amount) {
-		Write.writeLine("Enter an SQL Query: ");
-		String getContactsSQL = console.nextLine();
-
-		try {
-			PreparedStatement statement = root.prepareStatement(getContactsSQL);
-			// statement.setInt(1, amount);
-
-			long current = System.currentTimeMillis();
-			ResultSet set = statement.executeQuery();
-			long future = System.currentTimeMillis();
-
-			Write.writeLine("Query took " + (future - current) + " ms.");
-
-			return set;
-		} catch (SQLException err) {
-			Write.writeLine("SQLException: " + err.getMessage());
-			return null;
-		} finally {
-			Write.writeLine("Repeating this method");
-		}
-	}
-
-	private static void readResultSet(ResultSet set) throws SQLException {
-		ResultSetMetaData md = set.getMetaData();
-
-		while (set.next()) {
-			for (int i = 1; i <= md.getColumnCount(); i++) {
-				System.out.print(" " + set.getObject(i));
-			}
-			System.out.println();
-		}
-	}
-
-	private static String serializeContact(ResultSet contactsToShow, String commandSelection, String notesToSend,
-			boolean quickSearchingMoreContacts) {
-
-		/*
-		 * the amount of items to get at one time should we be selecting the
-		 * "Get More Contacts" feature
-		 */
-		int limit = 100;
-
-		try {
-			StringBuilder contactItemsBuilder = new StringBuilder();
-			int contactNumber = 0;
-			while (contactsToShow.next()) {
-
-				if ((quickSearchingMoreContacts && contactNumber > limit)
-						|| (!quickSearchingMoreContacts && contactNumber != 0)) {
-					contactItemsBuilder.append(ITEM_SEP);
-				}
-
-				if (!quickSearchingMoreContacts || (quickSearchingMoreContacts && contactNumber >= limit)) {
-
-					contactItemsBuilder.append(SEPARATOR).append("Contact ").append(contactNumber).append(" ")
-							.append(SEPARATOR).append("custid:" + contactsToShow.getString("CustId")).append(SEPARATOR)
-							.append("fName:" + contactsToShow.getString("Fname")).append(SEPARATOR)
-							.append("lName:" + contactsToShow.getString("Lname")).append(SEPARATOR)
-							.append("email:" + contactsToShow.getString("Email")).append(SEPARATOR)
-							.append("cellphone:" + contactsToShow.getString("OtherPhone")).append(SEPARATOR)
-							.append("lookingfor:" + contactsToShow.getString("Style")).append(SEPARATOR)
-							.append("timeframe:" + contactsToShow.getString("Title")).append(SEPARATOR)
-							.append("mi:" + contactsToShow.getString("Middle")).append(SEPARATOR)
-							.append("class:" + contactsToShow.getString("Class")).append(SEPARATOR)
-							.append("score:" + contactsToShow.getString("Score")).append(SEPARATOR)
-							.append("company:" + contactsToShow.getString("Company")).append(SEPARATOR).append("notes:")
-							.append(notesToSend);
-
-					if (!(commandSelection.equals("qs") || commandSelection.equals("qsMore")
-							|| commandSelection.equals("search"))) {
-						contactItemsBuilder.append(SEPARATOR).append("address:")
-								.append(contactsToShow.getString("Address") + SEPARATOR).append("city:")
-								.append(contactsToShow.getString("City")).append(SEPARATOR)
-								.append("state:" + contactsToShow.getString("State")).append(SEPARATOR)
-								.append("zipCode:" + contactsToShow.getString("ZipCode")).append(SEPARATOR)
-								.append("budget:" + contactsToShow.getString("Country")).append(SEPARATOR)
-								.append("niche:" + contactsToShow.getString("Industry")).append(SEPARATOR)
-								.append("homephone:" + contactsToShow.getString("HomPhone")).append(SEPARATOR)
-								.append("workphone:" + contactsToShow.getString("WorkPhone")).append(SEPARATOR);
-					}
-
-				}
-
-				contactNumber++;
-			}
-
-			String contactItems = contactItemsBuilder.toString();
-			return contactItems;
-		} catch (SQLException err) {
-			err.printStackTrace();
-			return null;
-		}
-	}
-
-	private static boolean isALeapYear(int year) {
-		return (year % 4 == 0) && !(year % 100 == 0 && year % 400 != 0);
-	}
-
-	private static boolean isALegalDate(int year, int month, int day) {
-		// check date legality
-		if ((month <= 7 && month % 2 == 0) || (month >= 8 && month % 2 == 1)) {
-			if (month == 2) {
-				if (isALeapYear(year)) {
-					// System.out.println("Is a february in leap year");
-					return day <= 29;
-				} else {
-					// System.out.println("Is a feburary in a normal year");
-					return day <= 28;
-				}
-			}
-
-			// System.out.println("Is an even month before July (but not
-			// February) or an odd month after August");
-			return day <= 30;
-		} else {
-
-			// System.out.println("Is an even month after August, or odd month
-			// before july");
-			return day <= 31;
-		}
+		long futureTime = System.currentTimeMillis();
+		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");
 	}
 
 	/**
@@ -247,7 +72,7 @@ public class PlayTest {
 	 * @param code
 	 * @return the deciphered code
 	 */
-	public static int getValue(String key, String code) {
+	public static int decodeIntegerFromString(String key, String code) {
 		char[] lettersInKey = key.toCharArray();
 		char[] codeArray = code.toCharArray();
 		String output = "0";
@@ -331,14 +156,6 @@ public class PlayTest {
 		String string = new String(array);
 
 		return string;
-	}
-
-	private static float getMean() {
-		int sum = 99999;
-		int size = 5;
-		float mean = sum / size;
-		Write.quickWrite("Mean is " + mean);
-		return mean;
 	}
 
 	/**

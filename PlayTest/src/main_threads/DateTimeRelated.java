@@ -53,7 +53,7 @@ public class DateTimeRelated {
 	
 
 
-	private static String getDateTime() {
+	private static String getTodayInSpecificFormat() {
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss");
 

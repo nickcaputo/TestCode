@@ -53,86 +53,6 @@ class Solution {
 		console.close();
 	}
 
-	
-	/**
-	// Three Step Path
-
-	// Given a website request log, compute the most common three step path
-	// taken by users.
-
-	// For example, given this request log:
-
-	// UserID,Path
-	// 1,/home
-	// 1,/search
-	// 2,/home
-	// 1,/product
-	// 2,/browse
-	// 2,/product
-	// 3,/home
-	// 1,/cart
-	// 3,/search
-	// 3,/product
-
-	// The most common 3 step path would be /home -> /search -> /product
-	// 1: home search product
-	// 1: search product cart
-	// 2: home browse productS
-	 * 
-	 * This could be completed.
-	*/
-	public static String findMostCommon(Scanner console) {
-		HashMap<String, String> map = new HashMap<>();
-		HashMap<Integer, String> worker = new HashMap<>(); // key is user, value
-															// is path route for
-															// user
-
-		// get first line of request log, find userID, find all paths taken by
-		// this user
-		while (console.hasNextLine()) {
-			String line = console.nextLine();
-			String[] idAndPath = line.split(",");
-			// idAndPath[0] == userId
-
-			if (map.get(idAndPath[0]) == null) {
-				map.put(idAndPath[0], idAndPath[1]);
-			} else {
-				String previousPath = map.get(idAndPath[0]);
-				String concatPath = previousPath + idAndPath[1];
-
-				// this will work if the log contains sets where each userId has 3 paths taken.
-				// a slight modification can allow us to accommodate values larger than 3.
-				char[] array = concatPath.toCharArray();
-				int slashes = 0;
-				for (char element : array) {
-					if (element == '/') {
-						slashes++;
-					}
-
-					if (slashes >= 3) {
-						worker.put(1, concatPath); // adds element to map
-					}
-				}
-
-				map.remove(idAndPath[0]);
-				map.put(idAndPath[0], concatPath);
-			}
-
-		}
-		
-		
-		int count = 1;
-		String pathToReturn = "";
-		while (worker.get(count) != null) { // iterates until we find the
-											// highest count
-			pathToReturn = worker.get(count);
-			count++;
-		}
-
-		return pathToReturn;
-	}
-	
-
 
 	/**
 	 * Calculates, given x and y coordinates for a given set of missiles coming
@@ -254,4 +174,83 @@ class Solution {
 		builder.append(original);
 		return builder.toString().contains(suspectedRotation);
 	}
+	
+	
+//	/**
+//	// Three Step Path
+//
+//	// Given a website request log, compute the most common three step path
+//	// taken by users.
+//
+//	// For example, given this request log:
+//
+//	// UserID,Path
+//	// 1,/home
+//	// 1,/search
+//	// 2,/home
+//	// 1,/product
+//	// 2,/browse
+//	// 2,/product
+//	// 3,/home
+//	// 1,/cart
+//	// 3,/search
+//	// 3,/product
+//
+//	// The most common 3 step path would be /home -> /search -> /product
+//	// 1: home search product
+//	// 1: search product cart
+//	// 2: home browse productS
+//	 * 
+//	 * This could be completed.
+//	*/
+//	public static String findMostCommon(Scanner console) {
+//		HashMap<String, String> map = new HashMap<>();
+//		HashMap<Integer, String> worker = new HashMap<>(); // key is user, value
+//															// is path route for
+//															// user
+//
+//		// get first line of request log, find userID, find all paths taken by
+//		// this user
+//		while (console.hasNextLine()) {
+//			String line = console.nextLine();
+//			String[] idAndPath = line.split(",");
+//			// idAndPath[0] == userId
+//
+//			if (map.get(idAndPath[0]) == null) {
+//				map.put(idAndPath[0], idAndPath[1]);
+//			} else {
+//				String previousPath = map.get(idAndPath[0]);
+//				String concatPath = previousPath + idAndPath[1];
+//
+//				// this will work if the log contains sets where each userId has 3 paths taken.
+//				// a slight modification can allow us to accommodate values larger than 3.
+//				char[] array = concatPath.toCharArray();
+//				int slashes = 0;
+//				for (char element : array) {
+//					if (element == '/') {
+//						slashes++;
+//					}
+//
+//					if (slashes >= 3) {
+//						worker.put(1, concatPath); // adds element to map
+//					}
+//				}
+//
+//				map.remove(idAndPath[0]);
+//				map.put(idAndPath[0], concatPath);
+//			}
+//
+//		}
+//		
+//		
+//		int count = 1;
+//		String pathToReturn = "";
+//		while (worker.get(count) != null) { // iterates until we find the
+//											// highest count
+//			pathToReturn = worker.get(count);
+//			count++;
+//		}
+//
+//		return pathToReturn;
+//	}
 }

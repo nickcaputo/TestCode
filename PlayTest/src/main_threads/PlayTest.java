@@ -1,47 +1,18 @@
 package main_threads;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import materials.Node;
 
 import java.util.Scanner;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import utilities.Constants;
 import utilities.StringCountComparator;
 import utilities.Write;
 
@@ -55,34 +26,6 @@ public class PlayTest {
 
 		long futureTime = System.currentTimeMillis();
 		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");
-	}
-
-	/**
-	 * Test method which adds items from a collection to a HashMap to get an
-	 * idea of how many duplicates there are in the collection.
-	 */
-	private static void hashMap() {
-		Map<Integer[], Integer> counter = new HashMap<>();
-		List<Integer[]> cellHistory = new ArrayList<>();
-
-		for (Integer[] item : cellHistory) {
-			Integer number = counter.get(item);
-			if (number == null) {
-				counter.put(item, 1);
-			} else {
-				counter.remove(item);
-				number++;
-
-				counter.put(item, number);
-			}
-
-			if (cellHistory.size() == counter.size()) {
-				Write.writeLine("Already most efficient path!");
-			} else {
-				// Write.writeLine("Can be more efficient");
-				// trim the ArrayList
-			}
-		}
 	}
 
 	/**
@@ -168,5 +111,33 @@ public class PlayTest {
 		String id = ManagementFactory.getRuntimeMXBean().getClassPath();
 		System.out.println(id);
 	}
+	
+//	/**
+//	 * Test method which adds items from a collection to a HashMap to get an
+//	 * idea of how many duplicates there are in the collection.
+//	 */
+//	private static void hashDuplicates() {
+//		Map<Integer[], Integer> counter = new HashMap<>();
+//		List<Integer[]> cellHistory = new ArrayList<>();
+//
+//		for (Integer[] item : cellHistory) {
+//			Integer number = counter.get(item);
+//			if (number == null) {
+//				counter.put(item, 1);
+//			} else {
+//				counter.remove(item);
+//				number++;
+//
+//				counter.put(item, number);
+//			}
+//
+//			if (cellHistory.size() == counter.size()) {
+//				Write.writeLine("Already most efficient path!");
+//			} else {
+//				// Write.writeLine("Can be more efficient");
+//				// trim the ArrayList
+//			}
+//		}
+//	}
 
 }

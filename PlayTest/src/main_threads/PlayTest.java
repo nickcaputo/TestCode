@@ -21,12 +21,63 @@ public class PlayTest {
 	public static void main(String[] args) {
 
 		long currentTime = System.currentTimeMillis();
+		
+		PlayTest test = new PlayTest();
 
-		SQLRelated.runSQLQueriesOnDatabase();
+//		SQLRelated.runSQLQueriesOnDatabase();
+		
+		Write.writeLine(test.canObtain("A", "ABBABAABAA"));
+		Write.writeLine(StringRelated.reverse("Irony"));
 
 		long futureTime = System.currentTimeMillis();
 		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");
 	}
+	
+	/**
+	 * This calls the recursive obtain function to see if a string can be rearranged into another.
+	 * @param initial, initial string
+	 * @param target, what we want to see if it can be turned into
+	 * @return, String saying "Possible" or "Impossible"
+	 */
+	private String canObtain(String initial, String target) {
+		String result = obtain(initial, target);
+		return result != null ? result : "Impossible";
+	}
+	
+	private String obtain(String initial, String target) {
+        if (initial.length() < target.length()) {
+            String added = initial + 'A';
+         	String switched = StringRelated.reverse(initial) + 'B';
+            
+            String result = obtain(added, target);
+            if (result == null) {
+                return obtain(switched, target);
+            } else {
+                return result;
+            }
+        }
+        
+        // called after strings are of equal length
+        if (initial.equals(target)) {
+        	return "Possible";
+        } else {
+        	return null;
+        }
+        
+    }
+	
+	public static int days(int[] arrivals, int numPerDay) {
+        double doublePerDay = numPerDay;
+        int totalDays = 0; 
+    	
+        for (int arrival : arrivals) {
+            double doubleArrival = arrival;
+        	double daysItWillTake = Math.ceil(doubleArrival/doublePerDay);
+            totalDays += daysItWillTake;
+        }
+        
+        return totalDays;
+    }
 
 	/**
 	 * Searches a tree for a goal node in a depth first manner. This problem is

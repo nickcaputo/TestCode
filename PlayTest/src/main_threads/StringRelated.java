@@ -69,7 +69,7 @@ public class StringRelated {
 	 *            , string to reverse
 	 * @return new String of reversed input
 	 */
-	public static String reverseString(String string) {
+	public static String reverse(String string) {
 		char[] array = string.toCharArray();
 		char[] reversed = new char[array.length];
 

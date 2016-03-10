@@ -4,8 +4,54 @@ import java.util.*;
 
 import utilities.Write;
 
-class Solution {
-	
+class Practice {
+
+	public static boolean isSingleRiffle(int[] half1, int[] half2, int[] deck) {
+		int half1Top = 0;
+		int half2Top = 0;
+		
+		// check to make sure that both halves combine to be the same length as the full deck
+		if ((half1.length + half2.length) == deck.length) {
+			
+			// iterate through the deck
+			for (int card : deck) {
+				int first = -1;
+				int second = -1;
+
+				// check if we have space left in the first half
+				if (half1Top < half1.length) {
+					first = half1[half1Top];
+				}
+
+				// check if we have space left in the second half
+				if (half2Top < half2.length) {
+					second = half2[half2Top];
+				}
+
+				// if the top card in the deck is not equal to the top card of
+				// the first or second half, it is not a single riffle
+				if (card != first && card != second) {
+					
+					Write.writeLine("first is " + first + "\nSecond is " + second + "\nCard is " + card);
+					return false;
+				} else {
+
+					// increment the top counters
+					if (card == first) {
+						half1Top++;
+					} else if (card == second) {
+						half2Top++;
+					}
+
+				}
+			}
+		}
+
+		// if we make it through here, we have iterated through the entire deck
+		// and both halves.
+		return true;
+	}
+
 	/**
 	 * // example key = "TRADINGFEW" // example code = "LGXWEV" // deciphered
 	 * int = 709 Could be more efficient by dynamically multiplying digits by
@@ -53,7 +99,6 @@ class Solution {
 		console.close();
 	}
 
-
 	/**
 	 * Calculates, given x and y coordinates for a given set of missiles coming
 	 * in at the user, the first target they miss at if it takes 1 second to
@@ -87,7 +132,6 @@ class Solution {
 		}
 		return -1;
 	}
-	
 
 	/**
 	 * Given a set of stock values, finds the maximum profit we could make by
@@ -99,8 +143,7 @@ class Solution {
 	public static void getMaxProfit(int[] stocks) {
 
 		if (stocks.length < 2) {
-			throw new IllegalArgumentException(
-					"You have to have at least two prices to sell at.");
+			throw new IllegalArgumentException("You have to have at least two prices to sell at.");
 		}
 
 		int maxProfit = stocks[1] - stocks[0];
@@ -122,8 +165,6 @@ class Solution {
 		System.out.println(maxProfit);
 
 	}
-	
-
 
 	/**
 	 * Test method adding items to a queue.
@@ -160,97 +201,97 @@ class Solution {
 			}
 		}
 	}
-	
 
 	/**
 	 * Returns true if the second string is a rotation of the input
+	 * 
 	 * @param original
 	 * @param suspectedRotation
 	 * @return
 	 */
-	public static boolean isStringRotation(String original,
-			String suspectedRotation) {
+	public static boolean isStringRotation(String original, String suspectedRotation) {
 		StringBuilder builder = new StringBuilder(original);
 		builder.append(original);
 		return builder.toString().contains(suspectedRotation);
 	}
-	
-	
-//	/**
-//	// Three Step Path
-//
-//	// Given a website request log, compute the most common three step path
-//	// taken by users.
-//
-//	// For example, given this request log:
-//
-//	// UserID,Path
-//	// 1,/home
-//	// 1,/search
-//	// 2,/home
-//	// 1,/product
-//	// 2,/browse
-//	// 2,/product
-//	// 3,/home
-//	// 1,/cart
-//	// 3,/search
-//	// 3,/product
-//
-//	// The most common 3 step path would be /home -> /search -> /product
-//	// 1: home search product
-//	// 1: search product cart
-//	// 2: home browse productS
-//	 * 
-//	 * This could be completed.
-//	*/
-//	public static String findMostCommon(Scanner console) {
-//		HashMap<String, String> map = new HashMap<>();
-//		HashMap<Integer, String> worker = new HashMap<>(); // key is user, value
-//															// is path route for
-//															// user
-//
-//		// get first line of request log, find userID, find all paths taken by
-//		// this user
-//		while (console.hasNextLine()) {
-//			String line = console.nextLine();
-//			String[] idAndPath = line.split(",");
-//			// idAndPath[0] == userId
-//
-//			if (map.get(idAndPath[0]) == null) {
-//				map.put(idAndPath[0], idAndPath[1]);
-//			} else {
-//				String previousPath = map.get(idAndPath[0]);
-//				String concatPath = previousPath + idAndPath[1];
-//
-//				// this will work if the log contains sets where each userId has 3 paths taken.
-//				// a slight modification can allow us to accommodate values larger than 3.
-//				char[] array = concatPath.toCharArray();
-//				int slashes = 0;
-//				for (char element : array) {
-//					if (element == '/') {
-//						slashes++;
-//					}
-//
-//					if (slashes >= 3) {
-//						worker.put(1, concatPath); // adds element to map
-//					}
-//				}
-//
-//				map.remove(idAndPath[0]);
-//				map.put(idAndPath[0], concatPath);
-//			}
-//
-//		}
-//		
-//		
-//		int count = 1;
-//		String pathToReturn = "";
-//		while (worker.get(count) != null) { // iterates until we find the
-//											// highest count
-//			pathToReturn = worker.get(count);
-//			count++;
-//		}
-//
-//		return pathToReturn;
-//	}
+
+	// /**
+	// // Three Step Path
+	//
+	// // Given a website request log, compute the most common three step path
+	// // taken by users.
+	//
+	// // For example, given this request log:
+	//
+	// // UserID,Path
+	// // 1,/home
+	// // 1,/search
+	// // 2,/home
+	// // 1,/product
+	// // 2,/browse
+	// // 2,/product
+	// // 3,/home
+	// // 1,/cart
+	// // 3,/search
+	// // 3,/product
+	//
+	// // The most common 3 step path would be /home -> /search -> /product
+	// // 1: home search product
+	// // 1: search product cart
+	// // 2: home browse productS
+	// *
+	// * This could be completed.
+	// */
+	// public static String findMostCommon(Scanner console) {
+	// HashMap<String, String> map = new HashMap<>();
+	// HashMap<Integer, String> worker = new HashMap<>(); // key is user, value
+	// // is path route for
+	// // user
+	//
+	// // get first line of request log, find userID, find all paths taken by
+	// // this user
+	// while (console.hasNextLine()) {
+	// String line = console.nextLine();
+	// String[] idAndPath = line.split(",");
+	// // idAndPath[0] == userId
+	//
+	// if (map.get(idAndPath[0]) == null) {
+	// map.put(idAndPath[0], idAndPath[1]);
+	// } else {
+	// String previousPath = map.get(idAndPath[0]);
+	// String concatPath = previousPath + idAndPath[1];
+	//
+	// // this will work if the log contains sets where each userId has 3 paths
+	// taken.
+	// // a slight modification can allow us to accommodate values larger than
+	// 3.
+	// char[] array = concatPath.toCharArray();
+	// int slashes = 0;
+	// for (char element : array) {
+	// if (element == '/') {
+	// slashes++;
+	// }
+	//
+	// if (slashes >= 3) {
+	// worker.put(1, concatPath); // adds element to map
+	// }
+	// }
+	//
+	// map.remove(idAndPath[0]);
+	// map.put(idAndPath[0], concatPath);
+	// }
+	//
+	// }
+	//
+	//
+	// int count = 1;
+	// String pathToReturn = "";
+	// while (worker.get(count) != null) { // iterates until we find the
+	// // highest count
+	// pathToReturn = worker.get(count);
+	// count++;
+	// }
+	//
+	// return pathToReturn;
+	// }
 }

@@ -22,12 +22,18 @@ public class PlayTest {
 
 		long currentTime = System.currentTimeMillis();
 		
-		PlayTest test = new PlayTest();
+//		PlayTest test = new PlayTest();
 
 //		SQLRelated.runSQLQueriesOnDatabase();
 		
-		Write.writeLine(test.canObtain("A", "ABBABAABAA"));
-		Write.writeLine(StringRelated.reverse("Irony"));
+//		Write.writeLine(test.canObtain("A", "ABABABA"));
+//		Write.writeLine(StringRelated.reverse("Irony"));
+		
+		int[] half1 = new int[] {1, 3, 6};
+		int[] half2 = new int[] {2, 5, 7};
+		int[] deck = new int[] {1, 2, 3, 5, 6, 7};
+		
+		Write.writeLine(Practice.isSingleRiffle(half1, half2, deck));
 
 		long futureTime = System.currentTimeMillis();
 		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");
@@ -40,30 +46,24 @@ public class PlayTest {
 	 * @return, String saying "Possible" or "Impossible"
 	 */
 	private String canObtain(String initial, String target) {
-		String result = obtain(initial, target);
-		return result != null ? result : "Impossible";
+		return obtain(initial, target) ? "Possible" : "Impossible";
 	}
 	
-	private String obtain(String initial, String target) {
-        if (initial.length() < target.length()) {
+	private boolean obtain(String initial, String target) {
+        if ((initial.length() < target.length()) && target.contains(initial) && target.contains(StringRelated.reverse(initial))) {
             String added = initial + 'A';
          	String switched = StringRelated.reverse(initial) + 'B';
             
-            String result = obtain(added, target);
-            if (result == null) {
-                return obtain(switched, target);
+            boolean match = obtain(added, target);
+            if (match) {
+                return true;
             } else {
-                return result;
+                return obtain(switched, target);
             }
         }
         
         // called after strings are of equal length
-        if (initial.equals(target)) {
-        	return "Possible";
-        } else {
-        	return null;
-        }
-        
+        return initial.equals(target);
     }
 	
 	public static int days(int[] arrivals, int numPerDay) {

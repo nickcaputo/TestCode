@@ -64,6 +64,13 @@ public class Write {
 	public static void writeLine(char message) {
 		writeLine("" + message);
 	}
+	
+	/**
+	 * Convenience method for printing out the date using the writeLine format.
+	 */
+	public static void writeLine() {
+		writeLine("");
+	}
 
 	/**
 	 * Used to evaluate the time impact of using localDateTime in a println

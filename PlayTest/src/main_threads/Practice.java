@@ -9,10 +9,11 @@ public class Practice {
 	public static boolean isSingleRiffle(int[] half1, int[] half2, int[] deck) {
 		int half1Top = 0;
 		int half2Top = 0;
-		
-		// check to make sure that both halves combine to be the same length as the full deck
+
+		// check to make sure that both halves combine to be the same length as
+		// the full deck
 		if ((half1.length + half2.length) == deck.length) {
-			
+
 			// iterate through the deck
 			for (int card : deck) {
 				int first = -1;
@@ -31,7 +32,7 @@ public class Practice {
 				// if the top card in the deck is not equal to the top card of
 				// the first or second half, it is not a single riffle
 				if (card != first && card != second) {
-					
+
 					Write.writeLine("first is " + first + "\nSecond is " + second + "\nCard is " + card);
 					return false;
 				} else {
@@ -50,6 +51,92 @@ public class Practice {
 		// if we make it through here, we have iterated through the entire deck
 		// and both halves.
 		return true;
+	}
+
+	/**
+	 * This is a topcoder problem to find a username and message in a given
+	 * string, where the username may have spaces in it, and the name and
+	 * message are separated by a space.
+	 * 
+	 * @param users
+	 * @param input
+	 * @return
+	 */
+	public static String toWhom(String[] users, String input) {
+		if (input.length() > 5 && input.substring(0, 5).equals("/msg ")) {
+			String message = input.substring(5);
+			if (message.contains(" ")) { // has at least two words in it
+
+				// walk through array, separating everything into different
+				// entries in list when you find a space
+				String[] listOfWords = message.split(" ");
+				// for (String word : listOfWords) {
+				// Write.writeLine(word);
+				// }
+
+				// now create an array of all possible names it could direct
+				// towards
+				HashMap<Integer, String> possibleNames = new HashMap<>();
+
+				for (int i = listOfWords.length - 2; i >= 0; i--) {
+					String userNameTest = "";
+					for (int j = 0; j <= i; j++) {
+						userNameTest += listOfWords[j];
+						if (j < i) {
+							userNameTest += ' ';
+						}
+					}
+
+					possibleNames.put(userNameTest.length(), userNameTest);
+				}
+
+				// Write.writeLine(possibleNames.size());
+				// for (Integer key : possibleNames.keySet()) {
+				// Write.writeLine("POSSIBLE NAME: " + possibleNames.get(key) +
+				// " with key " + key);
+				// }
+
+				// check each element in users array to see if it is in the
+				// possibleNames
+				String[] matches = new String[possibleNames.size()];
+				int count = 0;
+				for (String name : users) {
+					String possibleMatch = possibleNames.get(name.length());
+					// Write.writeLine("Trying to find " + name + " with key " +
+					// name.length());
+					if (possibleMatch != null && name.equals(possibleMatch)) {
+						matches[count] = possibleMatch;
+						count++;
+					}
+				}
+
+				// for (String match : matches) {
+				// Write.writeLine(match);
+				// }
+
+				// walk through the list of matches, find the largest element,
+				// and return that
+				int maxLength = Integer.MIN_VALUE;
+				String longestName = null;
+				for (String match : matches) {
+					if (match != null) {
+						int length = match.length();
+						if (length > maxLength) {
+							maxLength = length;
+							longestName = match;
+						}
+					}
+				}
+
+				// we have the match with the longest name
+				return longestName;
+
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
 	}
 
 	/**

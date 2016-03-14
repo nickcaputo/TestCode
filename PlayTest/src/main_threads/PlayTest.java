@@ -2,6 +2,7 @@ package main_threads;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,26 +21,23 @@ public class PlayTest {
 
 	public static void main(String[] args) {
 
+		LocalDateTime.now();
 		long currentTime = System.currentTimeMillis();
 		
-//		PlayTest test = new PlayTest();
-
+		PlayTest test = new PlayTest();
+		
 //		SQLRelated.runSQLQueriesOnDatabase();
 		
 //		Write.writeLine(test.canObtain("A", "ABABABA"));
-//		Write.writeLine(StringRelated.reverse("Irony"));
 		
-		int[] half1 = new int[] {1, 3, 6};
-		int[] half2 = new int[] {2, 5, 7};
-		int[] deck = new int[] {1, 2, 3, 5, 6, 7};
+//		int[] half1 = new int[] {1, 3, 6};
+//		int[] half2 = new int[] {2, 5, 7};
+//		int[] deck = new int[] {1, 2, 3, 5, 6, 7};
 		
-		String item = "String";
-		
-		for (char element : item.toCharArray()) {
-			Write.writeLine(element);
-		}
-		
-		Write.writeLine(Practice.isSingleRiffle(half1, half2, deck));
+//		Write.writeLine(Practice.isSingleRiffle(half1, half2, deck));
+
+		String[] users = new String[] {"John", "John Doe", "Jane H", "John Doeman", "Eric", "Ryan", "Kennedy"};
+		Write.writeLine(Practice.toWhom(users, "/msg John Doeman This is awesome!"));
 
 		long futureTime = System.currentTimeMillis();
 		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");

@@ -33,6 +33,12 @@ public class PlayTest {
 		int[] half2 = new int[] {2, 5, 7};
 		int[] deck = new int[] {1, 2, 3, 5, 6, 7};
 		
+		String item = "String";
+		
+		for (char element : item.toCharArray()) {
+			Write.writeLine(element);
+		}
+		
 		Write.writeLine(Practice.isSingleRiffle(half1, half2, deck));
 
 		long futureTime = System.currentTimeMillis();

@@ -56,6 +56,16 @@ public class Write {
 	}
 
 	/**
+	 * Convenience method printing a character in the writeLine format.
+	 * 
+	 * @param message,
+	 *            a character to print
+	 */
+	public static void writeLine(char message) {
+		writeLine("" + message);
+	}
+
+	/**
 	 * Used to evaluate the time impact of using localDateTime in a println
 	 * statement.
 	 * 
@@ -75,7 +85,7 @@ public class Write {
 	public static void quickWrite(double message) {
 		quickWrite("" + message);
 	}
-	
+
 	/**
 	 * This is a convenience method in order to print a number in the quickWrite
 	 * method.
@@ -85,8 +95,24 @@ public class Write {
 	public static void quickWrite(long message) {
 		quickWrite("" + message);
 	}
-	
+
+	/**
+	 * Convenience method printing a boolean in the quickWrite format.
+	 * 
+	 * @param message,
+	 *            a boolean value to print
+	 */
 	public static void quickWrite(boolean message) {
+		quickWrite("" + message);
+	}
+
+	/**
+	 * Convenience method printing a character in the quickWrite format.
+	 * 
+	 * @param message,
+	 *            a character to print
+	 */
+	public static void quickWrite(char message) {
 		quickWrite("" + message);
 	}
 

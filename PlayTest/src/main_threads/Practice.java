@@ -4,7 +4,7 @@ import java.util.*;
 
 import utilities.Write;
 
-class Practice {
+public class Practice {
 
 	public static boolean isSingleRiffle(int[] half1, int[] half2, int[] deck) {
 		int half1Top = 0;

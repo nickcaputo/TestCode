@@ -1,10 +1,12 @@
 package main_threads;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class ArrayRelated {
-	
+
 	/**
 	 * Given a 2D array of M x N dimensions, this sets the entire row and column
 	 * to 0 if a 0 is
@@ -59,6 +61,44 @@ public class ArrayRelated {
 			}
 			System.out.println();
 		}
+	}
+
+	/**
+	 *
+	 * Given an unsorted array of integers, sorts them by splitting it up into
+	 * negatives and positives, where both are in order. Ex: {-1, 3, 2, -3, -2,
+	 * 1} is turned into {-1, -3, -2, 3, 2, 1}
+	 * 
+	 * @param array,
+	 *            unsorted array
+	 * @return sorted array by halves
+	 */
+	public int[] negPosSort(int[] array) {
+		Queue<Integer> positives = new LinkedList<>();
+		Queue<Integer> negatives = new LinkedList<>();
+
+		for (int value : array) {
+			if (value >= 0) { // positive
+				positives.add(value);
+			} else { // negative
+				negatives.add(value);
+			}
+		}
+
+		int[] sorted = new int[array.length];
+		int place = 0;
+
+		for (int value : negatives) {
+			sorted[place] = value;
+			place++;
+		}
+
+		for (int value : positives) {
+			sorted[place] = value;
+			place++;
+		}
+
+		return sorted;
 	}
 
 }

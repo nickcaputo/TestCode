@@ -26,18 +26,19 @@ public class PlayTest {
 		
 		PlayTest test = new PlayTest();
 		
-//		SQLRelated.runSQLQueriesOnDatabase();
+		SQLRelated.runSQLQueriesOnDatabase();
 		
-//		Write.writeLine(test.canObtain("A", "ABABABA"));
-		
+//		int[] set = new int[] {2, 3, 6, 8, 2, 1, 3, 6, 5, 7, 166, 8, 9};
+//		ArrayRelated.findLargest(set);
+//		
 //		int[] half1 = new int[] {1, 3, 6};
 //		int[] half2 = new int[] {2, 5, 7};
 //		int[] deck = new int[] {1, 2, 3, 5, 6, 7};
-		
+//		
 //		Write.writeLine(Practice.isSingleRiffle(half1, half2, deck));
 
-		String[] users = new String[] {"John", "John Doe", "Jane H", "John Doeman", "Eric", "Ryan", "Kennedy"};
-		Write.writeLine(Practice.toWhom(users, "/msg John Doeman This is awesome!"));
+//		String[] users = new String[] {"John", "John Doe", "Jane H", "John Doeman", "Eric", "Ryan", "Kennedy"};
+//		Write.writeLine(Practice.toWhom(users, "/msg John Doeman This is awesome!"));
 
 		long futureTime = System.currentTimeMillis();
 		Write.writeLine("This took " + (futureTime - currentTime) + " ms.");
@@ -54,7 +55,7 @@ public class PlayTest {
 	}
 	
 	private boolean obtain(String initial, String target) {
-        if ((initial.length() < target.length()) && target.contains(initial) && target.contains(StringRelated.reverse(initial))) {
+        if ((initial.length() < target.length()) && (target.contains(initial) || target.contains(StringRelated.reverse(initial)))) {
             String added = initial + 'A';
          	String switched = StringRelated.reverse(initial) + 'B';
             

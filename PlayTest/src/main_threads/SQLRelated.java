@@ -18,14 +18,23 @@ public class SQLRelated {
 	 * results in the console!
 	 */
 	public static void runSQLQueriesOnDatabase() {
-		Connection root = getConnectionToPPro("C:/Test/Database1.mdb", "");
+		Connection root = getConnectionToPPro("C:/Rainmaker/ProspectorPro.mdb", "MiguelAngel");
 		Scanner console = new Scanner(System.in);
+		boolean running = true;
 
-		while (true) {
+		while (running) {
+//			Write.writeLine("What is the activity type?");
+//			String activityType = console.nextLine();
+//			Write.writeLine("What are the notes?");
+//			String notes = console.nextLine();
+//			Write.writeLine("What is the id?");
+//			String id = console.nextLine();
+//			updateActivityNotes_noQueries(root, notes, activityType, id);
+
 			ResultSet contacts = queryDatabase(console, root);
 
 			boolean contactsExist = contacts != null;
-			Write.writeLine(contactsExist);
+			Write.writeLine(contactsExist ? "Reading result set" : "No result set returned");
 
 			if (contactsExist) {
 				try {
@@ -35,6 +44,41 @@ public class SQLRelated {
 				}
 			}
 		}
+		console.close();
+	}
+
+	public static int updateActivityNotes_noQueries(Connection root, String note, String activityType, String id) {
+
+		String statement = null;
+
+		switch (activityType) {
+		case "Call":
+			statement = "UPDATE Calls SET Notes=? WHERE CallId=?";
+			break;
+		case "Correspondence":
+			statement = "UPDATE Correspondence SET Memo=? WHERE CorrId=?";
+			break;
+		case "Task":
+			statement = "UPDATE Tasks SET Notes=? WHERE TaskId=?";
+			break;
+		}
+
+		if (statement != null) {
+			try {
+				PreparedStatement run = root.prepareStatement(statement);
+
+				run.setString(1, note);
+				run.setString(2, id);
+
+				return run.executeUpdate();
+			} catch (SQLException err) {
+				err.printStackTrace();
+				return 0;
+			}
+		} else {
+			return 0;
+		}
+
 	}
 
 	/**
@@ -53,7 +97,8 @@ public class SQLRelated {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
 			long current = System.currentTimeMillis();
-			Connection root = DriverManager.getConnection("jdbc:ucanaccess://" + path + ";memory:false", "", pass);
+			Connection root = DriverManager.getConnection("jdbc:ucanaccess://" + path /* + ";memory:false" */, "",
+					pass);
 			long future = System.currentTimeMillis();
 
 			Write.writeLine("Loading the database took " + (future - current) + " ms.");
@@ -82,18 +127,33 @@ public class SQLRelated {
 	private static ResultSet queryDatabase(Scanner console, Connection root) {
 		Write.writeLine("Enter an SQL Query: ");
 		String getContactsSQL = console.nextLine();
+		String firstCommand = getContactsSQL.substring(0, 6);
 
 		try {
-			PreparedStatement statement = root.prepareStatement(getContactsSQL);
-			// statement.setInt(1, amount);
+			if (firstCommand.equals("SELECT")) {
+				PreparedStatement statement = root.prepareStatement(getContactsSQL);
+				// statement.setInt(1, amount);
 
-			long current = System.currentTimeMillis();
-			ResultSet set = statement.executeQuery();
-			long future = System.currentTimeMillis();
+				Write.writeLine("Running query.");
+				long current = System.currentTimeMillis();
+				ResultSet set = statement.executeQuery();
+				long future = System.currentTimeMillis();
 
-			Write.writeLine("Query took " + (future - current) + " ms.");
+				Write.writeLine("Query took " + (future - current) + " ms.");
 
-			return set;
+				return set;
+			} else {
+				PreparedStatement statement = root.prepareStatement(getContactsSQL);
+
+				Write.writeLine("Running query.");
+				long current = System.currentTimeMillis();
+				statement.executeUpdate();
+				long future = System.currentTimeMillis();
+
+				Write.writeLine("Query took " + (future - current) + " ms.");
+
+				return null;
+			}
 		} catch (SQLException err) {
 			Write.writeLine("SQLException: " + err.getMessage());
 			return null;
@@ -226,8 +286,7 @@ public class SQLRelated {
 			ResultSet results = selector.executeQuery();
 
 			while (results.next()) {
-				String personName = results.getString("firstName") + ' '
-						+ results.getString("lastName");
+				String personName = results.getString("firstName") + ' ' + results.getString("lastName");
 				System.out.println(personName);
 			}
 		} catch (Exception err) {

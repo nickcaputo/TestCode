@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.TreeSet;
+
+import utilities.Write;
 
 public class ArrayRelated {
 
@@ -73,7 +76,7 @@ public class ArrayRelated {
 	 *            unsorted array
 	 * @return sorted array by halves
 	 */
-	public int[] negPosSort(int[] array) {
+	public static int[] negPosSort(int[] array) {
 		Queue<Integer> positives = new LinkedList<>();
 		Queue<Integer> negatives = new LinkedList<>();
 
@@ -99,6 +102,23 @@ public class ArrayRelated {
 		}
 
 		return sorted;
+	}
+	
+	public static int findLargest(int[] values) {
+		if (values.length == 2) {
+			return 2;
+		} else {
+			TreeSet<Integer> set = new TreeSet<>();
+			
+			for (int item : values) {
+				set.add(item);
+			}
+			
+			System.out.println(set);
+			
+			return 2;
+		
+		}
 	}
 
 }
